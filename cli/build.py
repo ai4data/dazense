@@ -128,7 +128,14 @@ def build_server(project_root: Path, output_dir: Path) -> None:
     print("\n⚡ Compiling backend with Bun...")
     env = get_env_with_bun()
     run(
-        ["bun", "build", "src/index.ts", "--compile", "--outfile", str(output_dir / "nao-chat-server")],
+        [
+            "bun",
+            "build",
+            "src/index.ts",
+            "--compile",
+            "--outfile",
+            str(output_dir / "nao-chat-server"),
+        ],
         cwd=backend_dir,
         env=env,
     )
@@ -169,9 +176,19 @@ def build_package(cli_dir: Path) -> None:
 @app.default
 def build(
     *,
-    force: Annotated[bool, Parameter(["--force", "-f"], help="Force rebuild the server binary")] = False,
-    skip_server: Annotated[bool, Parameter(["--skip-server", "-s"], help="Skip server build, only build Python package")] = False,
-    bump: Annotated[BumpType | None, Parameter(help="Bump version before building (patch, minor, major)")] = None,
+    force: Annotated[
+        bool, Parameter(["--force", "-f"], help="Force rebuild the server binary")
+    ] = False,
+    skip_server: Annotated[
+        bool,
+        Parameter(
+            ["--skip-server", "-s"], help="Skip server build, only build Python package"
+        ),
+    ] = False,
+    bump: Annotated[
+        BumpType | None,
+        Parameter(help="Bump version before building (patch, minor, major)"),
+    ] = None,
 ) -> None:
     """Build the nao-core package.
 
@@ -212,7 +229,7 @@ def build(
         print(f"❌ Public directory not found: {public_dir}")
         sys.exit(1)
 
-    print(f"\n✓ Server assets ready")
+    print("\n✓ Server assets ready")
     print(f"   Binary: {binary_path}")
     print(f"   Public: {public_dir}")
 
