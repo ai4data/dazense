@@ -1,27 +1,25 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { signUp } from '@/lib/auth-client';
+import { signIn } from '@/lib/auth-client';
 import { SignForm } from '@/components/signinForm';
 
-export const Route = createFileRoute('/signup')({
-	component: SignUpForm,
+export const Route = createFileRoute('/login')({
+	component: SignInForm,
 });
 
-function SignUpForm() {
+function SignInForm() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
-		name: '',
 		email: '',
 		password: '',
 	});
 	const [error, setError] = useState('');
 
-	const handleSignUp = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError('');
-		await signUp.email(
+		await signIn.email(
 			{
-				name: formData.name,
 				email: formData.email,
 				password: formData.password,
 			},
@@ -45,37 +43,32 @@ function SignUpForm() {
 
 	const fields = [
 		{
-			id: 'name',
-			name: 'name',
-			type: 'text',
-			label: 'Name',
-		},
-		{
 			id: 'email',
 			name: 'email',
 			type: 'email',
 			label: 'Email',
-			placeholder: 'test@gmail.com',
+			placeholder: 'Enter your email',
 		},
 		{
 			id: 'password',
 			name: 'password',
 			type: 'password',
 			label: 'Password',
+			placeholder: 'Enter your password',
 		},
 	];
 
 	return (
 		<SignForm
-			title='Sign Up'
+			title='Sign In'
 			fields={fields}
 			formData={formData}
-			onSubmit={handleSignUp}
+			onSubmit={handleSubmit}
 			onChange={handleChange}
-			submitButtonText='Sign Up'
-			footerText='Already have an account?'
-			footerLinkText='Sign in'
-			footerLinkTo='/login'
+			submitButtonText='Sign In'
+			footerText="Don't have an account?"
+			footerLinkText='Sign up'
+			footerLinkTo='/signup'
 			error={error}
 		/>
 	);

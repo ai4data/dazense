@@ -1,6 +1,5 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, Link } from '@tanstack/react-router';
 import { LogOut } from 'lucide-react';
-import { Link } from './ui/link';
 import { ButtonConnection } from './ui/button';
 import { useSession, signOut } from '@/lib/auth-client';
 
@@ -11,7 +10,7 @@ export const Header = () => {
 	const handleSignOut = async (e: React.FormEvent) => {
 		e.preventDefault();
 		await signOut();
-		navigate({ to: '/signin' });
+		navigate({ to: '/login' });
 	};
 
 	if (!session) {
