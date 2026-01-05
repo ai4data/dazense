@@ -1,6 +1,6 @@
 [project]
 name = "nao-core"
-version = "0.0.9"
+version = "0.0.10"
 description = "nao Core is your analytics context builder with the best chat interface."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -36,7 +36,7 @@ Homepage = "https://getnao.io"
 Repository = "https://github.com/naolabs/chat"
 
 [dependency-groups]
-dev = ["ruff>=0.8.0"]
+dev = ["ruff>=0.8.0", "ty>=0.0.9"]
 
 [build-system]
 requires = ["hatchling"]

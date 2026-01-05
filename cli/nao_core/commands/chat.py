@@ -76,7 +76,7 @@ def chat():
 
         # Set LLM API key from config if available
         if config and config.llm:
-            env_var_name = f"{config.llm.model.upper()}_API_KEY"
+            env_var_name = f"{config.llm.provider.upper()}_API_KEY"
             env[env_var_name] = config.llm.api_key
             console.print(f"[bold green]✓[/bold green] Set {env_var_name} from config")
 
