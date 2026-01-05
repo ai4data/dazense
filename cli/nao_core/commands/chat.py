@@ -23,12 +23,8 @@ def get_server_binary_path() -> Path:
     binary_path = bin_dir / "nao-chat-server"
 
     if not binary_path.exists():
-        console.print(
-            f"[bold red]✗[/bold red] Server binary not found at {binary_path}"
-        )
-        console.print(
-            "[dim]Make sure you've built the server with ./scripts/build-server.sh[/dim]"
-        )
+        console.print(f"[bold red]✗[/bold red] Server binary not found at {binary_path}")
+        console.print("[dim]Make sure you've built the server with ./scripts/build-server.sh[/dim]")
         sys.exit(1)
 
     return binary_path
@@ -67,9 +63,7 @@ def chat():
     # Try to load nao config from current directory
     config = NaoConfig.try_load()
     if config:
-        console.print(
-            f"[bold green]✓[/bold green] Loaded config from {Path.cwd() / 'nao_config.yaml'}"
-        )
+        console.print(f"[bold green]✓[/bold green] Loaded config from {Path.cwd() / 'nao_config.yaml'}")
     else:
         console.print("[dim]No nao_config.yaml found in current directory[/dim]")
 
@@ -105,9 +99,7 @@ def chat():
             webbrowser.open(url)
             console.print("\n[dim]Press Ctrl+C to stop the server[/dim]\n")
         else:
-            console.print(
-                "[bold yellow]⚠[/bold yellow] Server is taking longer than expected to start..."
-            )
+            console.print("[bold yellow]⚠[/bold yellow] Server is taking longer than expected to start...")
             console.print(f"[dim]Check http://localhost:{SERVER_PORT} manually[/dim]")
 
         # Stream server output to console

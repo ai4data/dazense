@@ -176,14 +176,10 @@ def build_package(cli_dir: Path) -> None:
 @app.default
 def build(
     *,
-    force: Annotated[
-        bool, Parameter(["--force", "-f"], help="Force rebuild the server binary")
-    ] = False,
+    force: Annotated[bool, Parameter(["--force", "-f"], help="Force rebuild the server binary")] = False,
     skip_server: Annotated[
         bool,
-        Parameter(
-            ["--skip-server", "-s"], help="Skip server build, only build Python package"
-        ),
+        Parameter(["--skip-server", "-s"], help="Skip server build, only build Python package"),
     ] = False,
     bump: Annotated[
         BumpType | None,

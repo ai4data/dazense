@@ -24,6 +24,8 @@ dependencies = [
     "pydantic>=2.10.0",
     "pyyaml>=6.0.0",
     "rich>=14.0.0",
+    "ibis-framework[bigquery]>=9.0.0",
+    "openai>=1.0.0",
 ]
 
 [project.scripts]
@@ -53,3 +55,6 @@ include = [
     "README.md",
     "LICENSE",
 ]
+
+[tool.ruff]
+line-length = 120
