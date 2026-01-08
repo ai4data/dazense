@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+from ibis import BaseBackend
 from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
@@ -9,7 +10,7 @@ from nao_core.config import NaoConfig
 console = Console()
 
 
-def get_table_schema_markdown(conn, dataset: str, table: str) -> str:
+def get_table_schema_markdown(conn: BaseBackend, dataset: str, table: str) -> str:
     """Generate markdown content describing a table's columns."""
     try:
         # Get the table reference and its schema

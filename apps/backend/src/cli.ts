@@ -3,18 +3,25 @@
  * nao-chat-server CLI
  *
  * Usage:
- *   nao-chat-server migrate [--db <path>] [--migrations <path>]
- *   nao-chat-server serve [--port <port>] [--host <host>] [--db <path>]
+ *   nao-chat-server migrate
+ *   nao-chat-server serve [--port <port>] [--host <host>]
  *   nao-chat-server (defaults to serve)
  */
 
 import path from 'path';
 
 import { runMigrations } from './db/migrate';
+import { parseDbUri, type DatabaseType } from './utils';
 
 function getExecutableDir(): string {
-	// When running as a compiled binary, Bun.main is the path to the binary
-	return path.dirname(Bun.main);
+	// When running as a compiled binary, process.execPath is the path to the binary itself
+	return path.dirname(process.execPath);
+}
+
+function getMigrationsPath(dbType: DatabaseType): string {
+	const execDir = getExecutableDir();
+	const migrationsFolder = dbType === 'postgres' ? 'migrations-postgres' : 'migrations-sqlite';
+	return path.join(execDir, migrationsFolder);
 }
 
 function printHelp(): void {
@@ -25,8 +32,8 @@ USAGE:
     nao-chat-server <command> [options]
 
 COMMANDS:
-    serve       Start the chat server (default)
-    migrate     Run database migrations
+    serve       Run migrations and start the chat server (default)
+    migrate     Run database migrations only
 
 OPTIONS:
     -h, --help  Show this help message
@@ -34,16 +41,21 @@ OPTIONS:
 SERVE OPTIONS:
     --port <port>   Port to listen on (default: 5005)
     --host <host>   Host to bind to (default: 0.0.0.0)
-    --db <path>     Database file path (default: ./db.sqlite)
 
-MIGRATE OPTIONS:
-    --db <path>          Database file path (default: ./db.sqlite)
-    --migrations <path>  Migrations folder (default: ./migrations)
+ENVIRONMENT VARIABLES:
+    DB_URI    Database connection URI
+              SQLite:     sqlite:./path/to/db.sqlite
+              PostgreSQL: postgres://user:pass@host:port/database
 
 EXAMPLES:
+    # SQLite (default: sqlite:./db.sqlite)
     nao-chat-server serve --port 3000
-    nao-chat-server migrate --db ./data/chat.db
-    nao-chat-server migrate && nao-chat-server serve
+
+    # SQLite with custom path
+    DB_URI=sqlite:./data/chat.db nao-chat-server serve
+
+    # PostgreSQL
+    DB_URI=postgres://user:pass@localhost/mydb nao-chat-server serve
 `);
 }
 
@@ -85,13 +97,18 @@ function parseArgs(args: string[]): { command: string; options: Record<string, s
 async function runServe(options: Record<string, string>): Promise<void> {
 	const port = parseInt(options['port'] || '5005', 10);
 	const host = options['host'] || '0.0.0.0';
-	const dbPath = options['db'] || './db.sqlite';
+	const { type: dbType, connectionString } = parseDbUri();
 
-	// Set environment variable for the database
-	process.env.DB_FILE_NAME = dbPath;
+	// Run migrations before starting the server
+	try {
+		await runMigrateCommand();
+	} catch {
+		console.error('❌ Failed to run migrations, aborting server start');
+		process.exit(1);
+	}
 
-	console.log(`🚀 Starting nao chat server...`);
-	console.log(`   Database: ${dbPath}`);
+	console.log(`\n🚀 Starting nao chat server...`);
+	console.log(`   Database: ${dbType}${dbType === 'sqlite' ? ` (${connectionString})` : ''}`);
 	console.log(`   Listening on: ${host}:${port}`);
 
 	// Dynamic import to ensure env vars are set first
@@ -106,13 +123,16 @@ async function runServe(options: Record<string, string>): Promise<void> {
 	}
 }
 
-async function runMigrateCommand(options: Record<string, string>): Promise<void> {
-	const execDir = getExecutableDir();
-	const dbPath = options['db'] || './db.sqlite';
-	const migrationsPath = options['migrations'] || path.join(execDir, 'migrations');
+async function runMigrateCommand(): Promise<void> {
+	const { type: dbType, connectionString } = parseDbUri();
+	const migrationsPath = getMigrationsPath(dbType);
 
 	try {
-		await runMigrations(dbPath, migrationsPath);
+		await runMigrations({
+			dbType,
+			connectionString,
+			migrationsPath,
+		});
 	} catch {
 		process.exit(1);
 	}
@@ -129,7 +149,7 @@ async function main(): Promise<void> {
 
 	switch (command) {
 		case 'migrate':
-			await runMigrateCommand(options);
+			await runMigrateCommand();
 			break;
 		case 'serve':
 			await runServe(options);
@@ -142,5 +162,3 @@ async function main(): Promise<void> {
 }
 
 main();
-
-

@@ -1,19 +1,41 @@
 import { Database } from 'bun:sqlite';
-import { drizzle } from 'drizzle-orm/bun-sqlite';
-import { migrate } from 'drizzle-orm/bun-sqlite/migrator';
-import path from 'path';
+import { drizzle as drizzleBunSqlite } from 'drizzle-orm/bun-sqlite';
+import { migrate as migrateBunSqlite } from 'drizzle-orm/bun-sqlite/migrator';
+import { drizzle as drizzlePostgres } from 'drizzle-orm/postgres-js';
+import { migrate as migratePostgres } from 'drizzle-orm/postgres-js/migrator';
+import postgres from 'postgres';
 
-export async function runMigrations(dbPath: string, migrationsPath: string): Promise<void> {
-	console.log(`🗃️  Opening database: ${dbPath}`);
+import type { DatabaseType } from '../utils';
+
+interface MigrationOptions {
+	dbType: DatabaseType;
+	connectionString: string; // file path for SQLite, connection URL for PostgreSQL
+	migrationsPath: string;
+}
+
+export async function runMigrations(options: MigrationOptions): Promise<void> {
+	const { dbType, connectionString, migrationsPath } = options;
+
+	console.log(`🗃️  Database type: ${dbType}`);
 	console.log(`📁 Migrations folder: ${migrationsPath}`);
 
-	const sqlite = new Database(dbPath);
-	const db = drizzle(sqlite);
+	if (dbType === 'postgres') {
+		await runPostgresMigrations(connectionString, migrationsPath);
+	} else {
+		await runSqliteMigrations(connectionString, migrationsPath);
+	}
+}
 
-	console.log('🚀 Running migrations...');
+async function runSqliteMigrations(dbPath: string, migrationsPath: string): Promise<void> {
+	console.log(`🗃️  Opening SQLite database: ${dbPath}`);
+
+	const sqlite = new Database(dbPath);
+	const db = drizzleBunSqlite(sqlite);
+
+	console.log('🚀 Running SQLite migrations...');
 
 	try {
-		migrate(db, { migrationsFolder: migrationsPath });
+		migrateBunSqlite(db, { migrationsFolder: migrationsPath });
 		console.log('✅ Migrations completed successfully!');
 	} catch (error) {
 		console.error('❌ Migration failed:', error);
@@ -23,4 +45,22 @@ export async function runMigrations(dbPath: string, migrationsPath: string): Pro
 	}
 }
 
+async function runPostgresMigrations(connectionString: string, migrationsPath: string): Promise<void> {
+	console.log(`🗃️  Connecting to PostgreSQL...`);
 
+	// Use postgres.js for Bun compatibility
+	const sql = postgres(connectionString, { max: 1 });
+	const db = drizzlePostgres(sql);
+
+	console.log('🚀 Running PostgreSQL migrations...');
+
+	try {
+		await migratePostgres(db, { migrationsFolder: migrationsPath });
+		console.log('✅ Migrations completed successfully!');
+	} catch (error) {
+		console.error('❌ Migration failed:', error);
+		throw error;
+	} finally {
+		await sql.end();
+	}
+}

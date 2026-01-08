@@ -8,7 +8,6 @@ This script:
 4. Bundles everything into a Python wheel
 """
 
-import os
 import re
 import shutil
 import subprocess
@@ -34,15 +33,6 @@ def run(cmd: list[str], cwd: Path | None = None, env: dict | None = None) -> Non
     if result.returncode != 0:
         print(f"❌ Command failed: {' '.join(cmd)}")
         sys.exit(1)
-
-
-def get_env_with_bun() -> dict:
-    """Get environment with bun in PATH."""
-    env = os.environ.copy()
-    bun_path = Path.home() / ".bun" / "bin"
-    if bun_path.exists():
-        env["PATH"] = f"{bun_path}:{env.get('PATH', '')}"
-    return env
 
 
 def parse_version(version: str) -> tuple[int, int, int]:
@@ -124,46 +114,41 @@ def build_server(project_root: Path, output_dir: Path) -> None:
         shutil.rmtree(backend_public)
     shutil.copytree(frontend_dir / "dist", backend_public)
 
-    # Step 3: Generate database migrations
-    print("\n🗃️  Generating database migrations...")
-    env = get_env_with_bun()
-    # Set a default DB path for drizzle-kit generate
-    env["DB_FILE_NAME"] = str(backend_dir / "db.sqlite")
-    run(["bunx", "drizzle-kit", "generate"], cwd=backend_dir, env=env)
-
-    # Step 4: Compile backend CLI with Bun
+    # Step 3: Compile backend CLI with Bun
     print("\n⚡ Compiling backend CLI with Bun...")
-    run(
-        [
-            "bun",
-            "build",
-            "src/cli.ts",
-            "--compile",
-            "--outfile",
-            str(output_dir / "nao-chat-server"),
-        ],
-        cwd=backend_dir,
-        env=env,
-    )
+    run(["npm", "run", "build:standalone"], cwd=backend_dir)
 
-    # Step 5: Copy frontend assets next to the binary
+    # Step 4: Copy frontend assets next to the binary
     print("\n📦 Bundling assets with binary...")
     output_public = output_dir / "public"
     if output_public.exists():
         shutil.rmtree(output_public)
     shutil.copytree(backend_public, output_public)
 
-    # Step 6: Copy migrations next to the binary
+    # Step 5: Copy migrations next to the binary (both SQLite and PostgreSQL)
     print("\n📦 Bundling migrations with binary...")
-    backend_migrations = backend_dir / "migrations"
-    output_migrations = output_dir / "migrations"
-    if output_migrations.exists():
-        shutil.rmtree(output_migrations)
-    if backend_migrations.exists():
-        shutil.copytree(backend_migrations, output_migrations)
-        print(f"   Migrations: {output_migrations}")
+
+    # Copy SQLite migrations
+    sqlite_migrations_src = backend_dir / "migrations-sqlite"
+    sqlite_migrations_dst = output_dir / "migrations-sqlite"
+    if sqlite_migrations_dst.exists():
+        shutil.rmtree(sqlite_migrations_dst)
+    if sqlite_migrations_src.exists():
+        shutil.copytree(sqlite_migrations_src, sqlite_migrations_dst)
+        print(f"   SQLite migrations: {sqlite_migrations_dst}")
     else:
-        print("   ⚠️  No migrations folder found, skipping")
+        print("   ⚠️  No SQLite migrations folder found")
+
+    # Copy PostgreSQL migrations
+    postgres_migrations_src = backend_dir / "migrations-postgres"
+    postgres_migrations_dst = output_dir / "migrations-postgres"
+    if postgres_migrations_dst.exists():
+        shutil.rmtree(postgres_migrations_dst)
+    if postgres_migrations_src.exists():
+        shutil.copytree(postgres_migrations_src, postgres_migrations_dst)
+        print(f"   PostgreSQL migrations: {postgres_migrations_dst}")
+    else:
+        print("   ⚠️  No PostgreSQL migrations folder found")
 
     # Cleanup temporary public folder in backend
     shutil.rmtree(backend_public)
@@ -213,7 +198,8 @@ def build(
     output_dir = cli_dir / "nao_core" / "bin"
     binary_path = output_dir / "nao-chat-server"
     public_dir = output_dir / "public"
-    migrations_dir = output_dir / "migrations"
+    sqlite_migrations_dir = output_dir / "migrations-sqlite"
+    postgres_migrations_dir = output_dir / "migrations-postgres"
 
     # Bump version if requested
     if bump:
@@ -223,7 +209,13 @@ def build(
         update_version(cli_dir, new_version)
 
     # Check if we need to build the server
-    needs_build = force or not binary_path.exists() or not public_dir.exists() or not migrations_dir.exists()
+    needs_build = (
+        force
+        or not binary_path.exists()
+        or not public_dir.exists()
+        or not sqlite_migrations_dir.exists()
+        or not postgres_migrations_dir.exists()
+    )
 
     if skip_server:
         if not binary_path.exists() or not public_dir.exists():
@@ -247,8 +239,10 @@ def build(
     print("\n✓ Server assets ready")
     print(f"   Binary: {binary_path}")
     print(f"   Public: {public_dir}")
-    if migrations_dir.exists():
-        print(f"   Migrations: {migrations_dir}")
+    if sqlite_migrations_dir.exists():
+        print(f"   SQLite migrations: {sqlite_migrations_dir}")
+    if postgres_migrations_dir.exists():
+        print(f"   PostgreSQL migrations: {postgres_migrations_dir}")
 
     # Build the Python package
     build_package(cli_dir)
