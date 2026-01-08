@@ -36,7 +36,7 @@ app.register(fastifyTRPCPlugin, {
 });
 
 app.register(chatPlugin, {
-	prefix: '/api',
+	prefix: '/api/chat',
 });
 
 app.register(authPlugin, {
