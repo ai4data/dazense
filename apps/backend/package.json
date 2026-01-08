@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"build": "tsup src/index.ts --format esm --target node20 --minify",
-		"build:standalone": "bun build src/index.ts --compile --outfile nao-chat-server",
+		"build:standalone": "bun build src/cli.ts --compile --outfile nao-chat-server",
 		"start": "node dist/index.js",
 		"test": "vitest run",
 		"lint": "eslint .",

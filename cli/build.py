@@ -124,14 +124,20 @@ def build_server(project_root: Path, output_dir: Path) -> None:
         shutil.rmtree(backend_public)
     shutil.copytree(frontend_dir / "dist", backend_public)
 
-    # Step 3: Compile backend with Bun
-    print("\n⚡ Compiling backend with Bun...")
+    # Step 3: Generate database migrations
+    print("\n🗃️  Generating database migrations...")
     env = get_env_with_bun()
+    # Set a default DB path for drizzle-kit generate
+    env["DB_FILE_NAME"] = str(backend_dir / "db.sqlite")
+    run(["bunx", "drizzle-kit", "generate"], cwd=backend_dir, env=env)
+
+    # Step 4: Compile backend CLI with Bun
+    print("\n⚡ Compiling backend CLI with Bun...")
     run(
         [
             "bun",
             "build",
-            "src/index.ts",
+            "src/cli.ts",
             "--compile",
             "--outfile",
             str(output_dir / "nao-chat-server"),
@@ -140,12 +146,24 @@ def build_server(project_root: Path, output_dir: Path) -> None:
         env=env,
     )
 
-    # Step 4: Copy frontend assets next to the binary
+    # Step 5: Copy frontend assets next to the binary
     print("\n📦 Bundling assets with binary...")
     output_public = output_dir / "public"
     if output_public.exists():
         shutil.rmtree(output_public)
     shutil.copytree(backend_public, output_public)
+
+    # Step 6: Copy migrations next to the binary
+    print("\n📦 Bundling migrations with binary...")
+    backend_migrations = backend_dir / "migrations"
+    output_migrations = output_dir / "migrations"
+    if output_migrations.exists():
+        shutil.rmtree(output_migrations)
+    if backend_migrations.exists():
+        shutil.copytree(backend_migrations, output_migrations)
+        print(f"   Migrations: {output_migrations}")
+    else:
+        print("   ⚠️  No migrations folder found, skipping")
 
     # Cleanup temporary public folder in backend
     shutil.rmtree(backend_public)
@@ -195,6 +213,7 @@ def build(
     output_dir = cli_dir / "nao_core" / "bin"
     binary_path = output_dir / "nao-chat-server"
     public_dir = output_dir / "public"
+    migrations_dir = output_dir / "migrations"
 
     # Bump version if requested
     if bump:
@@ -204,7 +223,7 @@ def build(
         update_version(cli_dir, new_version)
 
     # Check if we need to build the server
-    needs_build = force or not binary_path.exists() or not public_dir.exists()
+    needs_build = force or not binary_path.exists() or not public_dir.exists() or not migrations_dir.exists()
 
     if skip_server:
         if not binary_path.exists() or not public_dir.exists():
@@ -228,6 +247,8 @@ def build(
     print("\n✓ Server assets ready")
     print(f"   Binary: {binary_path}")
     print(f"   Public: {public_dir}")
+    if migrations_dir.exists():
+        print(f"   Migrations: {migrations_dir}")
 
     # Build the Python package
     build_package(cli_dir)
