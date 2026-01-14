@@ -11,9 +11,6 @@ import { chatRoutes } from './routes/chat';
 import { TrpcRouter, trpcRouter } from './trpc/router';
 import { createContext } from './trpc/trpc';
 
-// Debug: log router procedures at startup
-console.log('tRPC Router procedures:', Object.keys(trpcRouter._def.procedures));
-
 // Get the directory of the current module (works in both dev and compiled)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

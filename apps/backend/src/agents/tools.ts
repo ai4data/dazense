@@ -7,27 +7,6 @@ import { read } from './tools/read';
 import { search } from './tools/search';
 
 export const tools = {
-	getWeather: tool({
-		description: 'Get the current weather for a specified city. Use this when the user asks about weather.',
-		inputSchema: z.object({
-			city: z.string().describe('The city to get the weather for'),
-		}),
-		outputSchema: z.object({
-			condition: z.string(),
-			temperature: z.string(),
-			humidity: z.string(),
-			wind: z.string(),
-		}),
-		execute: async ({ city }) => {
-			await new Promise((resolve) => setTimeout(resolve, 3000));
-			return {
-				condition: 'sunny',
-				temperature: '20°C',
-				humidity: '50%',
-				wind: '10 km/h',
-			};
-		},
-	}),
 	read_file: tool({
 		description: 'Read the contents of a file at a given path.',
 		inputSchema: z.object({

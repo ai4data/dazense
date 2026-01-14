@@ -1,4 +1,4 @@
-import { getProjectFolder } from './utils';
+import { getProjectFolder } from '../../utils/tools';
 
 export const execute_sql = async (query: string, databaseId?: string) => {
 	const naoProjectFolder = getProjectFolder();

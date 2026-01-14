@@ -28,11 +28,6 @@ export const isWithinProjectFolder = (filePath: string, projectFolder: string): 
  * @throws Error if the resolved path escapes the project folder
  */
 export const toRealPath = (virtualPath: string, projectFolder: string): string => {
-	// Handle empty, '.', or '/'
-	if (!virtualPath || virtualPath === '.' || virtualPath === '/') {
-		return projectFolder;
-	}
-
 	// Strip leading slash to make it relative to project folder
 	const relativePath = virtualPath.startsWith('/') ? virtualPath.slice(1) : virtualPath;
 
