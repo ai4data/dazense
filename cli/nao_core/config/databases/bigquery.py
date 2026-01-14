@@ -17,6 +17,8 @@ class BigQueryConfig(DatabaseConfig):
         default=None,
         description="Path to service account JSON file. If not provided, uses Application Default Credentials (ADC)",
     )
+    sso: bool = Field(default=False, description="Use Single Sign-On (SSO) for authentication")
+    location: str | None = Field(default=None, description="BigQuery location")
 
     def connect(self) -> BaseBackend:
         """Create an Ibis BigQuery connection."""
@@ -24,6 +26,9 @@ class BigQueryConfig(DatabaseConfig):
 
         if self.dataset_id:
             kwargs["dataset_id"] = self.dataset_id
+
+        if self.sso:
+            kwargs["auth_local_webserver"] = True
 
         if self.credentials_path:
             from google.oauth2 import service_account
