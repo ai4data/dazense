@@ -12,7 +12,6 @@ export const list = async (dir_path: string) => {
 	return await Promise.all(
 		entries.map(async (entry) => {
 			const fullRealPath = path.join(realPath, entry.name);
-			console.log('fullRealPath', fullRealPath);
 
 			const type: 'file' | 'directory' | 'symbolic_link' | undefined = entry.isDirectory()
 				? 'directory'
