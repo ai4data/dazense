@@ -1,16 +1,21 @@
-interface SlackEvent {
-	type: string;
-	user: string;
-	ts: string;
-	thread_ts?: string;
-	text: string;
-	channel: string;
-	event_ts: string;
-}
+import { z } from 'zod/v4';
 
-export interface SlackRequest {
-	type?: string;
-	challenge?: string;
-	token?: string;
-	event?: SlackEvent;
-}
+export const SlackEventSchema = z.object({
+	type: z.string(),
+	user: z.string(),
+	ts: z.string(),
+	thread_ts: z.string().optional(),
+	text: z.string(),
+	channel: z.string(),
+	event_ts: z.string(),
+});
+
+export const SlackRequestSchema = z.object({
+	type: z.string().optional(),
+	challenge: z.string().optional(),
+	token: z.string().optional(),
+	event: SlackEventSchema.optional(),
+});
+
+export type SlackRequest = z.infer<typeof SlackRequestSchema>;
+export type SlackEvent = z.infer<typeof SlackEventSchema>;
