@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, model_validator
 from .databases import AnyDatabaseConfig, parse_database_config
 from .llm import LLMConfig
 from .repos import RepoConfig
+from .slack import SlackConfig
 
 
 class NaoConfig(BaseModel):
@@ -16,6 +17,7 @@ class NaoConfig(BaseModel):
     databases: list[AnyDatabaseConfig] = Field(default_factory=list, description="The databases to use")
     repos: list[RepoConfig] = Field(default_factory=list, description="The repositories to use")
     llm: LLMConfig | None = Field(default=None, description="The LLM configuration")
+    slack: SlackConfig | None = Field(default=None, description="The Slack configuration")
 
     @model_validator(mode="before")
     @classmethod

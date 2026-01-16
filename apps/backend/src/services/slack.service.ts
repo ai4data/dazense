@@ -16,7 +16,7 @@ export class SlackService {
 	private _slackUserId: string;
 	private _user: User = {} as User;
 	private _abortController = new AbortController();
-	private _redirectUrl = process.env.REDIRECT_URL || '';
+	private _redirectUrl = process.env.REDIRECT_URL || 'http://localhost:5005/';
 	private _slackClient: WebClient;
 
 	constructor(body: SlackRequest) {

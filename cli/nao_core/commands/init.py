@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 
-from nao_core.config import AnyDatabaseConfig, BigQueryConfig, DatabaseType, LLMConfig, LLMProvider, NaoConfig
+from nao_core.config import AnyDatabaseConfig, BigQueryConfig, DatabaseType, LLMConfig, LLMProvider, NaoConfig, SlackConfig
 from nao_core.config.repos import RepoConfig
 
 console = Console()
@@ -185,6 +185,38 @@ def setup_llm() -> LLMConfig | None:
     return llm_config
 
 
+def setup_slack() -> SlackConfig | None:
+    """Setup the Slack configuration."""
+    slack_config = None
+    should_setup = Confirm.ask("\n[bold]Set up Slack integration?[/bold]", default=False)
+
+    if should_setup:
+        console.print("\n[bold cyan]Slack Configuration[/bold cyan]\n")
+
+        bot_token = Prompt.ask(
+            "[bold]Enter your Slack bot token[/bold]",
+            password=True,
+        )
+
+        if not bot_token:
+            raise InitError("Slack bot token cannot be empty.")
+
+        signing_secret = Prompt.ask(
+            "[bold]Enter your Slack signing secret[/bold]",
+            password=True,
+        )
+
+        if not signing_secret:
+            raise InitError("Slack signing secret cannot be empty.")
+
+        slack_config = SlackConfig(
+            bot_token=bot_token,
+            signing_secret=signing_secret,
+        )
+
+    return slack_config
+
+
 def create_empty_structure(project_path: Path) -> tuple[list[str], list[str]]:
     """Create project folder structure to guide users.
 
@@ -240,6 +272,7 @@ def init(
             databases=setup_databases(),
             repos=setup_repos(),
             llm=setup_llm(),
+            slack=setup_slack(),
         )
         config.save(project_path)
 
