@@ -7,7 +7,15 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 
-from nao_core.config import AnyDatabaseConfig, BigQueryConfig, DatabaseType, LLMConfig, LLMProvider, NaoConfig, SlackConfig
+from nao_core.config import (
+    AnyDatabaseConfig,
+    BigQueryConfig,
+    DatabaseType,
+    LLMConfig,
+    LLMProvider,
+    NaoConfig,
+    SlackConfig,
+)
 from nao_core.config.repos import RepoConfig
 
 console = Console()
