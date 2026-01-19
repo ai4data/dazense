@@ -12,7 +12,7 @@ import { getInstructions } from '../agents/prompt';
 import { tools } from '../agents/tools';
 import * as chatQueries from '../queries/chat.queries';
 import { UIChat, UIMessage } from '../types/chat';
-import { spreadTokenUsage } from '../utils/chat';
+import { convertToTokenUsage } from '../utils/chat';
 
 type AgentChat = UIChat & {
 	userId: string;
@@ -44,7 +44,6 @@ class AgentService {
 
 class AgentManager {
 	private readonly _agent: ToolLoopAgent<never, typeof tools, never>;
-	private _result: StreamTextResult<typeof tools, never>;
 
 	constructor(
 		readonly chat: AgentChat,
@@ -56,7 +55,6 @@ class AgentManager {
 			tools,
 			instructions: getInstructions(),
 		});
-		this._result = {} as StreamTextResult<typeof tools, never>;
 	}
 
 	private _chooseModelConfigBasedOnEnv(): Pick<ToolLoopAgentSettings, 'model' | 'providerOptions'> {
@@ -98,6 +96,7 @@ class AgentManager {
 		},
 	): ReadableStream {
 		let error: unknown = undefined;
+		let result: StreamTextResult<typeof tools, never>;
 		return createUIMessageStream<UIMessage>({
 			generateId: () => crypto.randomUUID(),
 			execute: async ({ writer }) => {
@@ -113,12 +112,12 @@ class AgentManager {
 					});
 				}
 
-				this._result = await this._agent.stream({
+				result = await this._agent.stream({
 					messages: await convertToModelMessages(messages),
 					abortSignal: this._abortController.signal,
 				});
 
-				writer.merge(this._result.toUIMessageStream({}));
+				writer.merge(result.toUIMessageStream({}));
 			},
 			onError: (err) => {
 				error = err;
@@ -126,7 +125,7 @@ class AgentManager {
 			},
 			onFinish: async (e) => {
 				const stopReason = e.isAborted ? 'interrupted' : e.finishReason;
-				const tokenUsage = spreadTokenUsage(await this._result.totalUsage);
+				const tokenUsage = convertToTokenUsage(await result.totalUsage);
 				await chatQueries.upsertMessage(e.responseMessage, {
 					chatId: this.chat.id,
 					stopReason,

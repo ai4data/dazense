@@ -2,7 +2,7 @@ import { LanguageModelUsage } from 'ai';
 
 import { TokenUsage } from '../types/chat';
 
-export const spreadTokenUsage = (usage: LanguageModelUsage): TokenUsage => ({
+export const convertToTokenUsage = (usage: LanguageModelUsage): TokenUsage => ({
 	inputTotalTokens: usage.inputTokens,
 	inputNoCacheTokens: usage.inputTokenDetails.noCacheTokens,
 	inputCacheReadTokens: usage.inputTokenDetails.cacheReadTokens,
