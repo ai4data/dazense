@@ -6,6 +6,7 @@ from .base import AccessorType, DatabaseConfig, DatabaseType
 from .bigquery import BigQueryConfig
 from .databricks import DatabricksConfig
 from .duckdb import DuckDBConfig
+from .postgres import PostgresConfig
 from .snowflake import SnowflakeConfig
 
 # =============================================================================
@@ -18,6 +19,7 @@ AnyDatabaseConfig = Annotated[
         Annotated[DatabricksConfig, Tag("databricks")],
         Annotated[SnowflakeConfig, Tag("snowflake")],
         Annotated[DuckDBConfig, Tag("duckdb")],
+        Annotated[PostgresConfig, Tag("postgres")],
     ],
     Discriminator("type"),
 ]
@@ -34,6 +36,8 @@ def parse_database_config(data: dict) -> DatabaseConfig:
         return DatabricksConfig.model_validate(data)
     elif db_type == "snowflake":
         return SnowflakeConfig.model_validate(data)
+    elif db_type == "postgres":
+        return PostgresConfig.model_validate(data)
     else:
         raise ValueError(f"Unknown database type: {db_type}")
 
@@ -47,4 +51,5 @@ __all__ = [
     "DatabaseType",
     "DatabricksConfig",
     "SnowflakeConfig",
+    "PostgresConfig",
 ]

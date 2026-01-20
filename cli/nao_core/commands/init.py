@@ -16,6 +16,7 @@ from nao_core.config import (
     LLMConfig,
     LLMProvider,
     NaoConfig,
+    PostgresConfig,
     SlackConfig,
     SnowflakeConfig,
 )
@@ -101,6 +102,11 @@ def setup_snowflake() -> SnowflakeConfig:
     return SnowflakeConfig.promptConfig()
 
 
+def setup_postgres() -> PostgresConfig:
+    """Setup a PostgreSQL database configuration."""
+    return PostgresConfig.promptConfig()
+
+
 def setup_databases() -> list[AnyDatabaseConfig]:
     """Setup database configurations."""
     databases: list[AnyDatabaseConfig] = []
@@ -122,6 +128,10 @@ def setup_databases() -> list[AnyDatabaseConfig]:
 
         if db_type == DatabaseType.BIGQUERY.value:
             db_config = setup_bigquery()
+            databases.append(db_config)
+            console.print(f"\n[bold green]✓[/bold green] Added database [cyan]{db_config.name}[/cyan]")
+        elif db_type == DatabaseType.POSTGRES.value:
+            db_config = setup_postgres()
             databases.append(db_config)
             console.print(f"\n[bold green]✓[/bold green] Added database [cyan]{db_config.name}[/cyan]")
 

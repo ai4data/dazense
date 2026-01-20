@@ -6,6 +6,7 @@ from .databases import (
     DatabaseType,
     DatabricksConfig,
     DuckDBConfig,
+    PostgresConfig,
     SnowflakeConfig,
 )
 from .exceptions import InitError
@@ -20,6 +21,7 @@ __all__ = [
     "DuckDBConfig",
     "DatabricksConfig",
     "SnowflakeConfig",
+    "PostgresConfig",
     "DatabaseType",
     "LLMConfig",
     "LLMProvider",

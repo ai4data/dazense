@@ -16,6 +16,7 @@ class DatabaseType(str, Enum):
     DUCKDB = "duckdb"
     DATABRICKS = "databricks"
     SNOWFLAKE = "snowflake"
+    POSTGRES = "postgres"
 
 
 class AccessorType(str, Enum):
