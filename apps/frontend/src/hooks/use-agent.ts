@@ -52,6 +52,8 @@ export const useAgent = (): AgentHelpers => {
 				},
 			}),
 			onData: ({ data: newChat }) => {
+				chatIdRef.current = newChat.id;
+
 				// Move the chat instance to the new chat id
 				agentService.moveAgent(agentId, newChat.id);
 
