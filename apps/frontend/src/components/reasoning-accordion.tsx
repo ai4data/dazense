@@ -37,7 +37,7 @@ export const ReasoningAccordion = ({ text, isStreaming }: ReasoningAccordionProp
 			<AccordionItem value='reasoning-content' className='border-b-0'>
 				<AccordionTrigger
 					className={cn(
-						'select-none flex items-center gap-2 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap transition-opacity duration-150 py-0 hover:no-underline [&>svg:last-child]:hidden',
+						'select-none flex items-center gap-2 px-3 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap transition-opacity duration-150 py-0 hover:no-underline [&>svg:last-child]:hidden',
 						isExpanded ? 'opacity-100' : 'opacity-50',
 						'cursor-pointer hover:opacity-75',
 					)}

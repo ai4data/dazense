@@ -78,7 +78,10 @@ export const ToolCallWrapper = ({
 			<AccordionItem value='tool-content' className={cn('border-b-0')} style={{ padding: 0 }} id={'hey'}>
 				{isBordered ? (
 					<div
-						className={cn('flex items-center justify-between gap-2 py-2', canExpand && 'cursor-pointer')}
+						className={cn(
+							'flex items-center justify-between gap-2 px-3 py-2',
+							canExpand && 'cursor-pointer',
+						)}
 						onClick={() => canExpand && setIsExpanded(!isExpanded)}
 					>
 						<AccordionTrigger
@@ -131,7 +134,7 @@ export const ToolCallWrapper = ({
 				) : (
 					<AccordionTrigger
 						className={cn(
-							'select-none flex items-center gap-2 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap [&_*]:overflow-hidden [&_*]:text-ellipsis [&_*]:whitespace-nowrap transition-opacity duration-150 py-0 hover:no-underline [&>svg:last-child]:hidden',
+							'select-none flex items-center gap-2 px-3 py-0 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap [&_*]:overflow-hidden [&_*]:text-ellipsis [&_*]:whitespace-nowrap transition-opacity duration-150 hover:no-underline [&>svg:last-child]:hidden',
 							isExpanded ? 'opacity-100' : 'opacity-50',
 							canExpand && !isExpanded
 								? 'cursor-pointer hover:opacity-75'
