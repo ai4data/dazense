@@ -13,6 +13,7 @@ function createDb() {
 		return drizzlePostgres(sql, { schema: pgSchema });
 	} else {
 		const sqlite = new Sqlite(dbConfig.dbUrl);
+		sqlite.run('PRAGMA foreign_keys = ON;');
 		return drizzleBunSqlite(sqlite, { schema: sqliteSchema });
 	}
 }
