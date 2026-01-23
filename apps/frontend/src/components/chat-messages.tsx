@@ -3,9 +3,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useParams } from '@tanstack/react-router';
 import { useStickToBottomContext } from 'use-stick-to-bottom';
 import { ToolCall } from './tool-call';
-import { ReasoningAccordion } from './reasoning-accordion';
+import { ReasoningAccordion } from './chat-message-reasoning-accordion';
 import { AgentMessageLoader } from './ui/agent-message-loader';
-import { MessageActions } from './message-actions';
+import { MessageActions } from './chat-message-actions';
 import type { UIMessage } from 'backend/chat';
 import type { MessageGroup } from '@/types/messages';
 import {
@@ -123,7 +123,7 @@ function MessageBlock({ message }: { message: UIMessage }) {
 
 const UserMessageBlock = ({ message }: { message: UIMessage }) => {
 	return (
-		<div className={cn('rounded-3xl px-4 py-2 bg-card text-card-foreground ml-auto max-w-xl border')}>
+		<div className={cn('rounded-2xl px-3 py-2 bg-card text-card-foreground ml-auto max-w-xl border')}>
 			{message.parts.map((p, i) => {
 				switch (p.type) {
 					case 'text':
@@ -144,7 +144,7 @@ const AssistantMessageBlock = ({ message }: { message: UIMessage }) => {
 	const { isRunning } = useAgentContext();
 
 	return (
-		<div className={cn('group px-4 flex flex-col gap-2 bg-transparent')}>
+		<div className={cn('group px-3 flex flex-col gap-2 bg-transparent')}>
 			{message.parts.map((p, i) => {
 				const isPartStreaming = 'state' in p && p.state === 'streaming';
 				if (isToolUIPart(p)) {
