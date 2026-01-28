@@ -2,6 +2,7 @@ import { and, eq } from 'drizzle-orm';
 
 import s, { DBProject, DBProjectMember, NewProject, NewProjectMember } from '../db/abstractSchema';
 import { db } from '../db/db';
+import { UserWithRole } from '../types/project';
 import * as userQueries from './user.queries';
 
 export const getProjectByPath = async (path: string): Promise<DBProject | null> => {
@@ -51,6 +52,22 @@ export const getUserRoleInProject = async (
 	return member?.role ?? null;
 };
 
+export const getAllUsersWithRoles = async (projectId: string): Promise<UserWithRole[]> => {
+	const results = await db
+		.select({
+			id: s.user.id,
+			name: s.user.name,
+			email: s.user.email,
+			role: s.projectMember.role,
+		})
+		.from(s.user)
+		.innerJoin(s.projectMember, eq(s.projectMember.userId, s.user.id))
+		.where(eq(s.projectMember.projectId, projectId))
+		.execute();
+
+	return results;
+};
+
 export const checkUserHasProject = async (userId: string): Promise<DBProject | null> => {
 	const projectPath = process.env.NAO_DEFAULT_PROJECT_PATH;
 	if (!projectPath) {
@@ -77,7 +94,7 @@ export const initializeDefaultProjectForFirstUser = async (userId: string): Prom
 		return;
 	}
 
-	const userCount = await userQueries.countUsers();
+	const userCount = await userQueries.countAll();
 	if (userCount !== 1) {
 		return;
 	}
@@ -111,7 +128,7 @@ export const assignAdminToOrphanedProject = async (): Promise<void> => {
 		throw new Error('[Startup] NAO_DEFAULT_PROJECT_PATH environment variable is not defined.');
 	}
 
-	const firstUser = await userQueries.getFirstUser();
+	const firstUser = await userQueries.getFirst();
 	if (!firstUser) {
 		return;
 	}

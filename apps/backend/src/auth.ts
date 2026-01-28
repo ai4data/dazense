@@ -4,6 +4,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from './db/db';
 import dbConfig, { Dialect } from './db/dbConfig';
 import * as projectQueries from './queries/project.queries';
+import { isEmailDomainAllowed } from './utils/utils';
 
 export const auth = betterAuth({
 	secret: process.env.BETTER_AUTH_SECRET,
@@ -25,6 +26,13 @@ export const auth = betterAuth({
 	databaseHooks: {
 		user: {
 			create: {
+				before: async (user, ctx) => {
+					const provider = ctx?.params?.id;
+					if (provider && provider == 'google' && !isEmailDomainAllowed(user.email)) {
+						return false;
+					}
+					return true;
+				},
 				async after(user) {
 					// Handle first user signup: create default project and add user as admin
 					await projectQueries.initializeDefaultProjectForFirstUser(user.id);
