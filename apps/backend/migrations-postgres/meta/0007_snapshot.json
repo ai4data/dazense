@@ -1,6 +1,6 @@
 {
-  "id": "118faed4-b82d-4079-b44f-3ce0bfe8d198",
-  "prevId": "83a55e91-6f86-43c6-838f-5327b532ae5f",
+  "id": "83a55e91-6f86-43c6-838f-5327b532ae5f",
+  "prevId": "aafed8bb-ee2e-4a38-b934-8ba27f382601",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1039,13 +1039,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
-        },
-        "requires_password_reset": {
-          "name": "requires_password_reset",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
         },
         "created_at": {
           "name": "created_at",
