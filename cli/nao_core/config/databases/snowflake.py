@@ -1,3 +1,4 @@
+import os
 from typing import Literal
 
 import ibis
@@ -6,7 +7,8 @@ from cryptography.hazmat.primitives import serialization
 from ibis import BaseBackend
 from pydantic import Field
 
-from nao_core.ui import ask_confirm, ask_text
+from nao_core.config.exceptions import InitError
+from nao_core.ui import UI, ask_confirm, ask_text
 
 from .base import DatabaseConfig
 
@@ -32,6 +34,10 @@ class SnowflakeConfig(DatabaseConfig):
         default=None,
         description="Passphrase for the private key if it is encrypted",
     )
+    authenticator: Literal["externalbrowser", "username_password_mfa", "jwt_token", "oauth"] | None = Field(
+        default=None,
+        description="Authentication method (e.g., 'externalbrowser' for SSO)",
+    )
 
     @classmethod
     def promptConfig(cls) -> "SnowflakeConfig":
@@ -43,28 +49,34 @@ class SnowflakeConfig(DatabaseConfig):
         warehouse = ask_text("Warehouse (optional):")
         schema = ask_text("Default schema (optional):")
 
-        key_pair_auth = ask_confirm("Use key-pair authentication?", default=False)
-
-        password = None
-        private_key_path = None
-        passphrase = None
+        use_sso = ask_confirm("Use SSO (external browser) for authentication?", default=False)
+        key_pair_auth = False if use_sso else ask_confirm("Use key-pair authentication?", default=False)
+        authenticator = "externalbrowser" if use_sso else None
 
         if key_pair_auth:
             private_key_path = ask_text("Path to private key file:", required_field=True)
+            if not private_key_path or not os.path.isfile(private_key_path):
+                raise InitError(f"Private key file not found: {private_key_path}")
             passphrase = ask_text("Private key passphrase (optional):", password=True)
+            password = None
         else:
-            password = ask_text("Snowflake password:", password=True, required_field=True)
+            password = None if use_sso else ask_text("Snowflake password:", password=True, required_field=True)
+            if not use_sso and not password:
+                raise InitError("Snowflake password cannot be empty.")
+            private_key_path = None
+            passphrase = None
 
         return SnowflakeConfig(
             name=name,
-            username=username,  # type: ignore
+            username=username or "",
             password=password,
-            account_id=account_id,  # type: ignore
-            database=database,  # type: ignore
+            account_id=account_id or "",
+            database=database or "",
             warehouse=warehouse,
             schema_name=schema,
             private_key_path=private_key_path,
             passphrase=passphrase,
+            authenticator=authenticator,
         )
 
     def connect(self) -> BaseBackend:
@@ -80,6 +92,11 @@ class SnowflakeConfig(DatabaseConfig):
         if self.warehouse:
             kwargs["warehouse"] = self.warehouse
 
+        # Add authenticator if using SSO (external browser)
+        if self.authenticator:
+            kwargs["authenticator"] = self.authenticator
+            UI.info(f"[yellow]Using authenticator: {self.authenticator}[/yellow]")
+
         if self.private_key_path:
             with open(self.private_key_path, "rb") as key_file:
                 private_key = serialization.load_pem_private_key(
@@ -93,7 +110,8 @@ class SnowflakeConfig(DatabaseConfig):
                     format=serialization.PrivateFormat.PKCS8,
                     encryption_algorithm=serialization.NoEncryption(),
                 )
-        kwargs["password"] = self.password
+        elif self.password:
+            kwargs["password"] = self.password
 
         return ibis.snowflake.connect(**kwargs, create_object_udfs=False)
 
