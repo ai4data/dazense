@@ -285,13 +285,12 @@ class AgentManager {
 			},
 		});
 
-		const first = messages[0];
-		const last = messages.at(-1)!;
-		if (first.role === 'system') {
-			withCache(first, CACHE_1H);
+		const lastIndex = messages.length - 1;
+		if (messages[0].role === 'system') {
+			messages[0] = withCache(messages[0], CACHE_1H);
 		}
-		if (last !== first) {
-			withCache(last, CACHE_5M);
+		if (messages.length > 1) {
+			messages[lastIndex] = withCache(messages[lastIndex], CACHE_5M);
 		}
 		return messages;
 	}
