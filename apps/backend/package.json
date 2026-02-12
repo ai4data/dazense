@@ -27,7 +27,8 @@
 		"db:drop": "drizzle-kit drop",
 		"db:reset": "rm db.sqlite",
 		"db:check-migrations": "bun scripts/db.check-migrations.ts",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"test:tool-outputs": "PRINT_OUTPUT=true vitest run tests/tool-outputs/"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "^3.0.15",
