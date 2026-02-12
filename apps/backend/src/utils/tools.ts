@@ -2,8 +2,6 @@ import fs from 'fs';
 import { minimatch } from 'minimatch';
 import path from 'path';
 
-import { env } from '../env';
-
 const MCP_TOOL_SEPARATOR = '__';
 
 /**
@@ -144,18 +142,6 @@ export const shouldExcludeEntry = (entryName: string, parentPath: string, projec
 	// Then check naoignore patterns
 	const relativePath = parentPath ? `${parentPath}/${entryName}` : entryName;
 	return isIgnoredByNaoignore(relativePath, projectFolder);
-};
-
-/**
- * Gets the resolved project folder path from the NAO_DEFAULT_PROJECT_PATH environment variable.
- * @throws Error if NAO_DEFAULT_PROJECT_PATH is not set
- */
-export const getProjectFolder = (): string => {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
-	if (!projectFolder) {
-		throw new Error('NAO_DEFAULT_PROJECT_PATH environment variable is not set');
-	}
-	return path.resolve(projectFolder);
 };
 
 /**

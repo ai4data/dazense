@@ -1,24 +1,15 @@
 import type { executeSql } from '@nao/shared/tools';
 import { executeSql as schemas } from '@nao/shared/tools';
-import { tool } from 'ai';
 
 import { ExecuteSqlOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { env } from '../../env';
-import { getProjectFolder } from '../../utils/tools';
+import { createTool, type ToolContext } from '../../types/tools';
 
-export default tool<executeSql.Input, executeSql.Output>({
-	description:
-		'Execute a SQL query against the connected database and return the results. If multiple databases are configured, specify the database_id.',
-	inputSchema: schemas.InputSchema,
-	outputSchema: schemas.OutputSchema,
-
-	execute: executeQuery,
-
-	toModelOutput: ({ output }) => renderToModelOutput(ExecuteSqlOutput({ output }), output),
-});
-
-export async function executeQuery({ sql_query, database_id }: executeSql.Input): Promise<executeSql.Output> {
-	const naoProjectFolder = getProjectFolder();
+export async function executeQuery(
+	{ sql_query, database_id }: executeSql.Input,
+	context: ToolContext,
+): Promise<executeSql.Output> {
+	const naoProjectFolder = context.projectFolder;
 
 	const response = await fetch(`http://localhost:${env.FASTAPI_PORT}/execute_sql`, {
 		method: 'POST',
@@ -44,3 +35,12 @@ export async function executeQuery({ sql_query, database_id }: executeSql.Input)
 		id: `query_${crypto.randomUUID().slice(0, 8)}`,
 	};
 }
+
+export default createTool({
+	description:
+		'Execute a SQL query against the connected database and return the results. If multiple databases are configured, specify the database_id.',
+	inputSchema: schemas.InputSchema,
+	outputSchema: schemas.OutputSchema,
+	execute: executeQuery,
+	toModelOutput: ({ output }) => renderToModelOutput(ExecuteSqlOutput({ output }), output),
+});

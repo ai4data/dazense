@@ -1,17 +1,11 @@
 import { grep } from '@nao/shared/tools';
-import { tool } from 'ai';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
 import { GrepOutput, renderToModelOutput } from '../../components/tool-outputs';
-import {
-	getProjectFolder,
-	isWithinProjectFolder,
-	loadNaoignorePatterns,
-	toRealPath,
-	toVirtualPath,
-} from '../../utils/tools';
+import { createTool } from '../../types/tools';
+import { isWithinProjectFolder, loadNaoignorePatterns, toRealPath, toVirtualPath } from '../../utils/tools';
 
 /**
  * Gets the path to the ripgrep binary.
@@ -53,13 +47,15 @@ interface RipgrepMatch {
 	context_after?: string[];
 }
 
-export default tool<grep.Input, grep.Output>({
+export default createTool({
 	description: 'Search for text patterns in files using ripgrep. Supports regex patterns and respects .gitignore.',
 	inputSchema: grep.InputSchema,
 	outputSchema: grep.OutputSchema,
-
-	execute: async ({ pattern, path: searchPath, glob, case_insensitive, context_lines, max_results = 100 }) => {
-		const projectFolder = getProjectFolder();
+	execute: async (
+		{ pattern, path: searchPath, glob, case_insensitive, context_lines, max_results = 100 },
+		context,
+	) => {
+		const projectFolder = context.projectFolder;
 		const rgPath = getRipgrepPath();
 
 		// Determine the search path

@@ -1,19 +1,18 @@
 import { searchFiles } from '@nao/shared/tools';
-import { tool } from 'ai';
 import fs from 'fs/promises';
 import { glob } from 'glob';
 import path from 'path';
 
 import { renderToModelOutput, SearchOutput } from '../../components/tool-outputs';
-import { getProjectFolder, isWithinProjectFolder, loadNaoignorePatterns, toVirtualPath } from '../../utils/tools';
+import { createTool } from '../../types/tools';
+import { isWithinProjectFolder, loadNaoignorePatterns, toVirtualPath } from '../../utils/tools';
 
-export default tool<searchFiles.Input, searchFiles.Output>({
+export default createTool({
 	description: 'Search for files matching a glob pattern within the project.',
 	inputSchema: searchFiles.InputSchema,
 	outputSchema: searchFiles.OutputSchema,
-
-	execute: async ({ pattern }) => {
-		const projectFolder = getProjectFolder();
+	execute: async ({ pattern }, context) => {
+		const projectFolder = context.projectFolder;
 
 		// Sanitize pattern to prevent escaping project folder
 		if (path.isAbsolute(pattern)) {
@@ -55,7 +54,7 @@ export default tool<searchFiles.Input, searchFiles.Output>({
 			}),
 		);
 
-		return { _version: '1', files };
+		return { _version: '1' as const, files };
 	},
 
 	toModelOutput: ({ output }) => renderToModelOutput(SearchOutput({ output }), output),

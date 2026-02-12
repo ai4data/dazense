@@ -18,7 +18,7 @@ import * as projectQueries from '../queries/project.queries';
 import * as llmConfigQueries from '../queries/project-llm-config.queries';
 import { AgentSettings } from '../types/agent-settings';
 import { TokenCost, TokenUsage, UIChat, UIMessage } from '../types/chat';
-import { convertToCost, convertToTokenUsage } from '../utils/chat';
+import { convertToCost, convertToTokenUsage, retrieveProjectById } from '../utils/chat';
 import { getDefaultModelId, getEnvApiKey, getEnvModelSelections, ModelSelection } from '../utils/llm';
 
 export type { ModelSelection };
@@ -180,11 +180,18 @@ class AgentManager {
 					});
 				}
 
+				// Fetch project path and run agent within project context
+				const project = await retrieveProjectById(this.chat.projectId);
+
 				const messages = await this._buildModelMessages(uiMessages);
 
 				result = await this._agent.stream({
 					messages,
 					abortSignal: this._abortController.signal,
+					// @ts-expect-error - experimental_context is not yet in the types
+					experimental_context: {
+						projectFolder: project.path,
+					},
 				});
 
 				writer.merge(result.toUIMessageStream({}));

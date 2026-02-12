@@ -1,9 +1,9 @@
 import { executePython as schemas } from '@nao/shared/tools';
-import { tool } from 'ai';
 import fs from 'fs';
 import path from 'path';
 
-import { getProjectFolder, isWithinProjectFolder, toVirtualPath } from '../../utils/tools';
+import { createTool } from '../../types/tools';
+import { isWithinProjectFolder, toVirtualPath } from '../../utils/tools';
 
 // @pydantic/monty uses native bindings that aren't available on all platforms
 // (e.g. no Linux ARM64 binary). Load lazily so the server can still start.
@@ -21,14 +21,17 @@ const RESOURCE_LIMITS = {
 	maxRecursionDepth: 500,
 };
 
-export async function executePython({ code, inputs }: schemas.Input): Promise<schemas.Output> {
+async function executePython(
+	{ code, inputs }: schemas.Input,
+	{ projectFolder }: { projectFolder: string },
+): Promise<schemas.Output> {
 	if (!montyModule) {
 		throw new Error('Python execution is not available on this platform');
 	}
 
 	const { Monty, MontyRuntimeError, MontySnapshot, MontySyntaxError, MontyTypingError } = montyModule;
 	const inputNames = inputs ? Object.keys(inputs) : [];
-	const virtualFS = createVirtualFS();
+	const virtualFS = createVirtualFS(projectFolder);
 
 	let monty: InstanceType<typeof Monty>;
 	try {
@@ -123,15 +126,10 @@ function findAllFiles(dir: string, projectFolder: string): schemas.VirtualFile[]
 	return files;
 }
 
-function loadProjectFiles(): schemas.VirtualFile[] {
-	const projectFolder = getProjectFolder();
-	return findAllFiles(projectFolder, projectFolder);
-}
-
-function createVirtualFS(): Map<string, string> {
+function createVirtualFS(projectFolder: string): Map<string, string> {
 	const vfs = new Map<string, string>();
 
-	const projectFiles = loadProjectFiles();
+	const projectFiles = findAllFiles(projectFolder, projectFolder);
 	for (const file of projectFiles) {
 		vfs.set(file.path, file.content);
 	}
@@ -145,10 +143,12 @@ const EXTERNAL_FUNCTION_NAMES = schemas.EXTERNAL_FUNCTIONS.map((f) => f.name);
 export const isPythonAvailable = montyModule !== null;
 
 export default montyModule
-	? tool({
+	? createTool({
 			description: schemas.description,
 			inputSchema: schemas.inputSchema,
 			outputSchema: schemas.outputSchema,
-			execute: executePython,
+			execute: async (input, context) => {
+				return executePython(input, { projectFolder: context.projectFolder });
+			},
 		})
 	: null;
