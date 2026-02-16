@@ -148,10 +148,10 @@ def render_all_templates(
     Returns:
         TemplateRenderResult with statistics about what was rendered.
     """
-    from rich.console import Console
+    from nao_core.ui import create_console
 
     if console is None:
-        console = Console()
+        console = create_console()
 
     templates = discover_templates(project_path)
 

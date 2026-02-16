@@ -98,7 +98,12 @@ export const useAgent = (): AgentHelpers => {
 					};
 				},
 			}),
-			onData: ({ data: newChat }) => {
+			onData: ({ data }) => {
+				if (!data || !('id' in data) || !('title' in data)) {
+					return;
+				}
+				const newChat = data;
+
 				// Move the chat instance to the new chat id
 				agentService.moveAgent(agentId, newChat.id);
 

@@ -4,15 +4,14 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from rich.console import Console
-
 from nao_core.commands.sync.cleanup import cleanup_stale_repos
 from nao_core.config import NaoConfig
 from nao_core.config.repos import RepoConfig
+from nao_core.ui import create_console
 
 from ..base import SyncProvider, SyncResult
 
-console = Console()
+console = create_console()
 
 
 def clone_or_pull_repo(repo: RepoConfig, base_path: Path) -> bool:

@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
 
-from rich.console import Console
+from nao_core.ui import create_console
 
-console = Console()
+console = create_console()
 
 
 @dataclass

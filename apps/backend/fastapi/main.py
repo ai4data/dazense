@@ -18,6 +18,8 @@ sys.path.insert(0, str(cli_path))
 
 from nao_core.config import NaoConfig, NaoConfigError
 from nao_core.context import get_context_provider
+from nao_core.rules import BusinessRules
+from nao_core.semantic import SemanticEngine, SemanticModel
 
 port = int(os.environ.get("PORT", 8005))
 
@@ -104,6 +106,48 @@ class RefreshResponse(BaseModel):
     status: str
     updated: bool
     message: str
+
+
+class QueryMetricsRequest(BaseModel):
+    nao_project_folder: str
+    model_name: str
+    measures: list[str]
+    dimensions: list[str] = []
+    filters: list[dict] = []
+    order_by: list[dict] = []
+    limit: int | None = None
+    database_id: str | None = None
+
+
+class QueryMetricsResponse(BaseModel):
+    data: list[dict]
+    row_count: int
+    columns: list[str]
+    model_name: str
+    measures: list[str]
+    dimensions: list[str]
+
+
+class BusinessContextRequest(BaseModel):
+    nao_project_folder: str
+    category: str | None = None
+    concepts: list[str] = []
+
+
+class BusinessContextResponse(BaseModel):
+    rules: list[dict]
+    categories: list[str]
+
+
+class ClassifyRequest(BaseModel):
+    nao_project_folder: str
+    name: str | None = None
+    tags: list[str] = []
+
+
+class ClassifyResponse(BaseModel):
+    classifications: list[dict]
+    available_names: list[str]
 
 
 class HealthResponse(BaseModel):
@@ -242,6 +286,113 @@ async def execute_sql(request: ExecuteSQLRequest):
         raise
     except NaoConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/query_metrics", response_model=QueryMetricsResponse)
+async def query_metrics(request: QueryMetricsRequest):
+    try:
+        project_path = Path(request.nao_project_folder)
+        os.chdir(project_path)
+
+        semantic_model = SemanticModel.load(project_path)
+        if semantic_model is None:
+            raise HTTPException(
+                status_code=400,
+                detail="No semantic_model.yml found in semantics/ folder",
+            )
+
+        config = NaoConfig.try_load(project_path, raise_on_error=True)
+        assert config is not None
+
+        engine = SemanticEngine(semantic_model, config.databases)
+        rows = engine.query(
+            model_name=request.model_name,
+            measures=request.measures,
+            dimensions=request.dimensions,
+            filters=request.filters,
+            order_by=request.order_by,
+            limit=request.limit,
+        )
+
+        columns = list(rows[0].keys()) if rows else request.dimensions + request.measures
+
+        return QueryMetricsResponse(
+            data=rows,
+            row_count=len(rows),
+            columns=columns,
+            model_name=request.model_name,
+            measures=request.measures,
+            dimensions=request.dimensions,
+        )
+    except HTTPException:
+        raise
+    except NaoConfigError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/business_context", response_model=BusinessContextResponse)
+async def business_context(request: BusinessContextRequest):
+    try:
+        project_path = Path(request.nao_project_folder)
+
+        business_rules = BusinessRules.load(project_path)
+        if business_rules is None:
+            raise HTTPException(
+                status_code=400,
+                detail="No business_rules.yml found in semantics/ folder",
+            )
+
+        if request.category:
+            rules = business_rules.filter_by_category(request.category)
+        elif request.concepts:
+            rules = business_rules.filter_by_concept(request.concepts)
+        else:
+            rules = business_rules.rules
+
+        return BusinessContextResponse(
+            rules=[r.model_dump() for r in rules],
+            categories=business_rules.get_categories(),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/classify", response_model=ClassifyResponse)
+async def classify(request: ClassifyRequest):
+    try:
+        project_path = Path(request.nao_project_folder)
+
+        business_rules = BusinessRules.load(project_path)
+        if business_rules is None:
+            raise HTTPException(
+                status_code=400,
+                detail="No business_rules.yml found in semantics/ folder",
+            )
+
+        if request.name:
+            classification = business_rules.get_classification(request.name)
+            classifications = [classification] if classification else []
+        elif request.tags:
+            classifications = business_rules.filter_classifications_by_tags(
+                request.tags
+            )
+        else:
+            classifications = business_rules.classifications
+
+        return ClassifyResponse(
+            classifications=[c.model_dump() for c in classifications],
+            available_names=business_rules.get_classification_names(),
+        )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

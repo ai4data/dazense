@@ -1,0 +1,39 @@
+models:
+  customers:
+    table: customers
+    schema: main
+    primary_key: customer_id
+    dimensions:
+      customer_id:
+        column: customer_id
+      first_name:
+        column: first_name
+      last_name:
+        column: last_name
+    measures:
+      customer_count:
+        type: count
+
+  orders:
+    table: orders
+    schema: main
+    primary_key: order_id
+    time_dimension: order_date
+    dimensions:
+      status:
+        column: status
+    measures:
+      order_count:
+        type: count
+      total_amount:
+        column: amount
+        type: sum
+      avg_order_value:
+        column: amount
+        type: avg
+    joins:
+      customer:
+        to_model: customers
+        foreign_key: customer_id
+        related_key: customer_id
+        type: many_to_one

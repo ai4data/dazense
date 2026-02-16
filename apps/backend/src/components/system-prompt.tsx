@@ -1,9 +1,18 @@
-import { getConnections, getUserRules } from '../agents/user-rules';
+import {
+	getBusinessRules,
+	getClassifications,
+	getConnections,
+	getSemanticModels,
+	getUserRules,
+} from '../agents/user-rules';
 import { Block, Bold, Br, Italic, Link, List, ListItem, Span, Title } from '../lib/markdown';
 
 export function SystemPrompt() {
 	const userRules = getUserRules();
 	const connections = getConnections();
+	const semanticModels = getSemanticModels();
+	const businessRules = getBusinessRules();
+	const classifications = getClassifications();
 
 	return (
 		<Block>
@@ -91,6 +100,64 @@ export function SystemPrompt() {
 						{connections.map((connection) => (
 							<ListItem>
 								{connection.type} database={connection.database}
+							</ListItem>
+						))}
+					</List>
+				</Block>
+			)}
+			{semanticModels && (
+				<Block>
+					<Title level={2}>Semantic Layer</Title>
+					<Span>
+						A semantic layer is available with pre-defined metrics and dimensions. Prefer using the
+						query_metrics tool over writing raw SQL when the required measures and dimensions are available.
+					</Span>
+					<List>
+						{semanticModels.map((model) => (
+							<ListItem>
+								<Bold>{model.name}</Bold> (table: {model.table}
+								{model.description && ` — ${model.description}`}){'\n'}Dimensions:{' '}
+								{model.dimensions.join(', ') || 'none'}
+								{'\n'}Measures:{' '}
+								{Object.entries(model.measures)
+									.map(([name, type]) => `${name} (${type})`)
+									.join(', ')}
+								{model.joins.length > 0 && `\nJoins: ${model.joins.join(', ')}`}
+							</ListItem>
+						))}
+					</List>
+				</Block>
+			)}
+			{businessRules && (
+				<Block>
+					<Title level={2}>Business Rules</Title>
+					<Span>
+						The following business rules and data caveats must be considered when answering questions. Use
+						the get_business_context tool to retrieve detailed rules for specific topics.
+					</Span>
+					<List>
+						{businessRules
+							.filter((rule) => rule.severity === 'critical')
+							.map((rule) => (
+								<ListItem>
+									<Bold>[{rule.severity}]</Bold> {rule.name}: {rule.description}
+								</ListItem>
+							))}
+					</List>
+				</Block>
+			)}
+			{classifications && (
+				<Block>
+					<Title level={2}>Entity Classifications</Title>
+					<Span>
+						The following entity classifications are available. Use the classify tool to retrieve full
+						details including conditions and characteristics for specific classifications.
+					</Span>
+					<List>
+						{classifications.map((classification) => (
+							<ListItem>
+								<Bold>{classification.name}</Bold>: {classification.description}
+								{classification.tags.length > 0 && ` (tags: ${classification.tags.join(', ')})`}
 							</ListItem>
 						))}
 					</List>

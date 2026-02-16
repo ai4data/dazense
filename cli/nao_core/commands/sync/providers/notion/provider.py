@@ -4,15 +4,15 @@ from typing import Any, cast
 
 from notion2md.exporter.block import StringExporter
 from notion_client import Client
-from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
 from nao_core.config.base import NaoConfig
 from nao_core.config.notion import NotionConfig
+from nao_core.ui import create_console
 
 from ..base import SyncProvider, SyncResult
 
-console = Console()
+console = create_console()
 
 # Notion page IDs are 32-character hex strings (UUID without dashes)
 NOTION_PAGE_ID_PATTERN = re.compile(r"[a-f0-9]{32}")

@@ -5,11 +5,11 @@ from pathlib import Path
 from typing import Annotated
 
 from cyclopts import Parameter
-from rich.console import Console
 
 from nao_core.config import NaoConfig
 from nao_core.templates.render import render_all_templates
 from nao_core.tracking import track_command
+from nao_core.ui import create_console
 
 from .providers import (
     PROVIDER_CHOICES,
@@ -19,7 +19,7 @@ from .providers import (
     get_providers_by_names,
 )
 
-console = Console()
+console = create_console()
 
 
 @track_command("sync")

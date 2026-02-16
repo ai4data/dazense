@@ -1,0 +1,14 @@
+rules:
+  - name: cancelled_orders_excluded
+    category: metrics
+    severity: critical
+    applies_to: [orders.total_amount, orders.avg_order_value]
+    description: Revenue metrics should exclude cancelled orders
+    guidance: Always filter status != 'cancelled' when computing revenue
+
+  - name: test_customers
+    category: data_quality
+    severity: warning
+    applies_to: [customers]
+    description: Test customers exist in the data with IDs > 100
+    guidance: Filter out customer_id > 100 for production analysis

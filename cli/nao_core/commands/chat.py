@@ -6,13 +6,12 @@ import webbrowser
 from pathlib import Path
 from time import sleep
 
-from rich.console import Console
-
 from nao_core.config import NaoConfig
 from nao_core.mode import MODE
 from nao_core.tracking import track_command
+from nao_core.ui import create_console
 
-console = Console()
+console = create_console()
 
 # Default port for the nao chat server
 SERVER_PORT = 5005

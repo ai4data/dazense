@@ -1,12 +1,27 @@
 """CLI UI utilities using questionary and Rich."""
 
+import sys
+
 import pandas as pd
 import questionary
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-console = Console()
+
+def create_console() -> Console:
+    """Create a Rich Console that works on Windows without emoji encoding errors.
+
+    On Windows, the default stdout encoding (cp1252) can't render emoji characters.
+    Reconfiguring to UTF-8 lets Rich output them without crashing.
+    """
+    if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
+        sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
+    return Console()
+
+
+console = create_console()
 
 
 class UI:

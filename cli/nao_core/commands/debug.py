@@ -1,12 +1,12 @@
 from typing import Tuple
 
-from rich.console import Console
 from rich.table import Table
 
 from nao_core.config import NaoConfig
 from nao_core.tracking import track_command
+from nao_core.ui import create_console
 
-console = Console()
+console = create_console()
 
 
 def _count(models) -> int:

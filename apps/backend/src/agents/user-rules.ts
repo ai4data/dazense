@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
+import YAML from 'yaml';
 
 import { env } from '../env';
 
@@ -72,6 +73,126 @@ export function getConnections(): Connection[] | null {
 		return connections.length > 0 ? connections : null;
 	} catch (error) {
 		console.error('Error reading databases folder:', error);
+		return null;
+	}
+}
+
+export type SemanticModelInfo = {
+	name: string;
+	table: string;
+	description?: string;
+	dimensions: string[];
+	measures: Record<string, string>;
+	joins: string[];
+};
+
+export function getSemanticModels(): SemanticModelInfo[] | null {
+	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	if (!projectFolder) {
+		return null;
+	}
+
+	const yamlPath = join(projectFolder, 'semantics', 'semantic_model.yml');
+	if (!existsSync(yamlPath)) {
+		return null;
+	}
+
+	try {
+		const content = readFileSync(yamlPath, 'utf-8');
+		const parsed = YAML.parse(content) as Record<string, Record<string, Record<string, unknown>>> | null;
+		if (!parsed?.models) {
+			return null;
+		}
+
+		return Object.entries(parsed.models).map(([name, model]) => ({
+			name,
+			table: model.table as string,
+			description: model.description as string | undefined,
+			dimensions: Object.keys((model.dimensions as Record<string, unknown>) || {}),
+			measures: Object.fromEntries(
+				Object.entries((model.measures as Record<string, Record<string, string>>) || {}).map(([k, v]) => [
+					k,
+					v.type,
+				]),
+			),
+			joins: Object.keys((model.joins as Record<string, unknown>) || {}),
+		}));
+	} catch (error) {
+		console.error('Error reading semantic_model.yml:', error);
+		return null;
+	}
+}
+
+export type BusinessRuleInfo = {
+	name: string;
+	category: string;
+	severity: string;
+	description: string;
+	guidance: string;
+};
+
+export function getBusinessRules(): BusinessRuleInfo[] | null {
+	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	if (!projectFolder) {
+		return null;
+	}
+
+	const yamlPath = join(projectFolder, 'semantics', 'business_rules.yml');
+	if (!existsSync(yamlPath)) {
+		return null;
+	}
+
+	try {
+		const content = readFileSync(yamlPath, 'utf-8');
+		const parsed = YAML.parse(content) as { rules?: BusinessRuleInfo[] } | null;
+		if (!parsed?.rules) {
+			return null;
+		}
+
+		return parsed.rules.map((rule) => ({
+			name: rule.name,
+			category: rule.category,
+			severity: rule.severity || 'info',
+			description: rule.description,
+			guidance: rule.guidance,
+		}));
+	} catch (error) {
+		console.error('Error reading business_rules.yml:', error);
+		return null;
+	}
+}
+
+export type ClassificationInfo = {
+	name: string;
+	description: string;
+	tags: string[];
+};
+
+export function getClassifications(): ClassificationInfo[] | null {
+	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	if (!projectFolder) {
+		return null;
+	}
+
+	const yamlPath = join(projectFolder, 'semantics', 'business_rules.yml');
+	if (!existsSync(yamlPath)) {
+		return null;
+	}
+
+	try {
+		const content = readFileSync(yamlPath, 'utf-8');
+		const parsed = YAML.parse(content) as { classifications?: Record<string, ClassificationInfo> } | null;
+		if (!parsed?.classifications) {
+			return null;
+		}
+
+		return Object.entries(parsed.classifications).map(([name, classification]) => ({
+			name,
+			description: classification.description,
+			tags: classification.tags || [],
+		}));
+	} catch (error) {
+		console.error('Error reading classifications from business_rules.yml:', error);
 		return null;
 	}
 }

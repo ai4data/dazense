@@ -7,7 +7,6 @@ from typing import cast
 import yaml
 from ibis import BaseBackend
 from pydantic import BaseModel, Field, ValidationError, model_validator
-from rich.console import Console
 
 from nao_core.ui import UI, ask_confirm, ask_select
 
@@ -247,7 +246,9 @@ class NaoConfig(BaseModel):
             if raise_on_error:
                 raise NaoConfigError(message)
             if exit_on_error:
-                console = Console()
+                from nao_core.ui import create_console
+
+                console = create_console()
                 console.print(f"[bold red]✗[/bold red] {message}")
                 sys.exit(1)
 

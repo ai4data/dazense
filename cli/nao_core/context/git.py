@@ -3,11 +3,11 @@
 import subprocess
 from pathlib import Path
 
-from rich.console import Console
+from nao_core.ui import create_console
 
 from .base import ContextProvider
 
-console = Console()
+console = create_console()
 
 
 class GitContextProvider(ContextProvider):

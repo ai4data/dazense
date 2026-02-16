@@ -3,18 +3,18 @@
 from pathlib import Path
 from typing import Any
 
-from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 
 from nao_core.commands.sync.cleanup import DatabaseSyncState, cleanup_stale_databases, cleanup_stale_paths
 from nao_core.config import AnyDatabaseConfig, NaoConfig
 from nao_core.config.databases.base import DatabaseConfig
 from nao_core.templates.engine import get_template_engine
+from nao_core.ui import create_console
 
 from ..base import SyncProvider, SyncResult
 from .context import DatabaseContext
 
-console = Console()
+console = create_console()
 
 TEMPLATE_PREFIX = "databases"
 

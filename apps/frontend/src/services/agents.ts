@@ -21,7 +21,8 @@ export const agentService = {
 	moveAgent(fromId: string, toId: string): void {
 		const agent = agents.get(fromId);
 		if (!agent) {
-			throw new Error(`Agent ${fromId} not found.`);
+			console.warn(`moveAgent: agent ${fromId} not found, skipping move to ${toId}`);
+			return;
 		}
 		agents.delete(fromId);
 		agents.set(toId, agent);
