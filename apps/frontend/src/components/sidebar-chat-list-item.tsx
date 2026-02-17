@@ -13,7 +13,7 @@ import {
 import { InputEdit } from './ui/input-edit';
 import type { ComponentProps } from 'react';
 
-import type { ChatListItem } from '@nao/backend/chat';
+import type { ChatListItem } from '@dazense/backend/chat';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTimeAgo } from '@/hooks/use-time-ago';

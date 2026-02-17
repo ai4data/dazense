@@ -1,5 +1,5 @@
-import type { classify } from '@nao/shared/tools';
-import { classify as schemas } from '@nao/shared/tools';
+import type { classify } from '@dazense/shared/tools';
+import { classify as schemas } from '@dazense/shared/tools';
 
 import { ClassifyOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { env } from '../../env';
@@ -10,7 +10,7 @@ async function executeClassify({ name, tags }: classify.Input, context: ToolCont
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			nao_project_folder: context.projectFolder,
+			dazense_project_folder: context.projectFolder,
 			...(name && { name }),
 			...(tags?.length && { tags }),
 		}),

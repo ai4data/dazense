@@ -1,4 +1,4 @@
-import { displayChart } from '@nao/shared/tools';
+import { displayChart } from '@dazense/shared/tools';
 import { tool } from 'ai';
 
 import { DisplayChartOutput, renderToModelOutput } from '../../components/tool-outputs';

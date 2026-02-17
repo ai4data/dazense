@@ -1,11 +1,11 @@
-import { searchFiles } from '@nao/shared/tools';
+import { searchFiles } from '@dazense/shared/tools';
 import fs from 'fs/promises';
 import { glob } from 'glob';
 import path from 'path';
 
 import { renderToModelOutput, SearchOutput } from '../../components/tool-outputs';
 import { createTool } from '../../types/tools';
-import { isWithinProjectFolder, loadNaoignorePatterns, toVirtualPath } from '../../utils/tools';
+import { isWithinProjectFolder, loadDazenseignorePatterns, toVirtualPath } from '../../utils/tools';
 
 export default createTool({
 	description: 'Search for files matching a glob pattern within the project.',
@@ -25,9 +25,9 @@ export default createTool({
 		// Make pattern recursive if not already
 		const sanitizedPattern = pattern.startsWith('**/') ? pattern : `**/${pattern}`;
 
-		// Build ignore patterns from .naoignore
-		const naoignorePatterns = loadNaoignorePatterns(projectFolder);
-		const ignorePatterns = naoignorePatterns.flatMap((ignorePattern) => {
+		// Build ignore patterns from .dazenseignore
+		const dazenseignorePatterns = loadDazenseignorePatterns(projectFolder);
+		const ignorePatterns = dazenseignorePatterns.flatMap((ignorePattern) => {
 			const cleanPattern = ignorePattern.endsWith('/') ? ignorePattern.slice(0, -1) : ignorePattern;
 			return [`**/${cleanPattern}`, `**/${cleanPattern}/**`];
 		});

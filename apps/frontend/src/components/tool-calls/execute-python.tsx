@@ -3,7 +3,7 @@ import { Streamdown } from 'streamdown';
 import { Code, Copy, Terminal } from 'lucide-react';
 import { useToolCallContext } from '../../contexts/tool-call.provider';
 import { ToolCallWrapper } from './tool-call-wrapper';
-import type { executePython } from '@nao/shared/tools';
+import type { executePython } from '@dazense/shared/tools';
 import { isToolSettled } from '@/lib/ai';
 
 type ViewMode = 'output' | 'code';

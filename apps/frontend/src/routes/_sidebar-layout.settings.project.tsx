@@ -161,7 +161,7 @@ function ProjectPage() {
 				) : (
 					<SettingsCard>
 						<p className='text-sm text-muted-foreground'>
-							No project configured. Set NAO_DEFAULT_PROJECT_PATH environment variable.
+							No project configured. Set DAZENSE_DEFAULT_PROJECT_PATH environment variable.
 						</p>
 					</SettingsCard>
 				)}

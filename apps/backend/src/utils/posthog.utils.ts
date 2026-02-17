@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 
 /**
  * Get or create a persistent anonymous distinct ID for this user.
- * The ID is stored in ~/.nao/distinct_id to persist across invocations.
+ * The ID is stored in ~/.dazense/distinct_id to persist across invocations.
  */
 export const getPostHogDistinctId = (): string => {
 	try {
@@ -36,7 +36,7 @@ const getPostHogIdFromFile = () => {
 	return existingId;
 };
 
-const getDistinctIdFilePath = () => join(homedir(), '.nao', 'distinct_id');
+const getDistinctIdFilePath = () => join(homedir(), '.dazense', 'distinct_id');
 
 const isValidUuid = (id: string): boolean => {
 	return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id);

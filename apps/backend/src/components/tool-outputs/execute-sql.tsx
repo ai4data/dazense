@@ -1,5 +1,5 @@
-import { pluralize } from '@nao/shared';
-import type { executeSql } from '@nao/shared/tools';
+import { pluralize } from '@dazense/shared';
+import type { executeSql } from '@dazense/shared/tools';
 
 import { Block, CodeBlock, ListItem, Span, Title, TitledList } from '../../lib/markdown';
 import { truncateMiddle } from '../../utils/utils';

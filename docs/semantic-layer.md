@@ -1,6 +1,6 @@
-# Tutorial: Semantic Layer & Business Rules in nao
+# Tutorial: Semantic Layer & Business Rules in dazense
 
-This tutorial walks you through nao from scratch — setting up a project, syncing a database, then adding the semantic layer and business rules on top.
+This tutorial walks you through dazense from scratch — setting up a project, syncing a database, then adding the semantic layer and business rules on top.
 
 ## Prerequisites
 
@@ -8,18 +8,18 @@ This tutorial walks you through nao from scratch — setting up a project, synci
 - Node.js 20+ and npm installed
 - An LLM API key (OpenAI, Anthropic, etc.)
 
-## Part 1: Setting Up nao
+## Part 1: Setting Up dazense
 
 ### Step 1: Install the CLI
 
 ```bash
-pip install nao-core
+pip install dazense-core
 ```
 
 Verify it works:
 
 ```bash
-nao --version
+dazense --version
 ```
 
 ### Step 2: Create a new project
@@ -27,7 +27,7 @@ nao --version
 Run the interactive setup wizard:
 
 ```bash
-nao init
+dazense init
 ```
 
 It will ask you a series of questions:
@@ -44,10 +44,10 @@ This creates a project folder with this structure:
 
 ```
 my-project/
-├── nao_config.yaml      # Main configuration
+├── dazense_config.yaml  # Main configuration
 ├── RULES.md             # Instructions for the AI agent
-├── .naoignore           # Files to exclude from sync
-├── databases/           # Synced database metadata (populated by nao sync)
+├── .dazenseignore       # Files to exclude from sync
+├── databases/           # Synced database metadata (populated by dazense sync)
 ├── docs/                # Documentation files
 ├── semantics/           # Semantic layer + business rules (we'll add these)
 ├── queries/             # Saved queries
@@ -61,7 +61,7 @@ my-project/
 
 ```bash
 cd my-project
-nao debug
+dazense debug
 ```
 
 This tests connectivity to your database and LLM provider. You should see green checkmarks.
@@ -69,7 +69,7 @@ This tests connectivity to your database and LLM provider. You should see green 
 ### Step 4: Sync your database
 
 ```bash
-nao sync
+dazense sync
 ```
 
 This reads your database schema and creates markdown files in `databases/` describing every table — columns, types, sample rows. The AI agent uses these files to understand your data without querying the database directly.
@@ -89,7 +89,7 @@ databases/
 ### Step 5: Launch the chat UI
 
 ```bash
-nao chat
+dazense chat
 ```
 
 This starts the app and opens `http://localhost:5005` in your browser. You now have a working analytics agent — try asking it a question about your data. It will write SQL, execute it, and return results.
@@ -104,7 +104,7 @@ The semantic layer lets you define **metrics and dimensions** in YAML. The agent
 
 ### Step 6: Create the semantic model
 
-Create `semantics/semantic_model.yml` in your project folder. Here's an example using the jaffle_shop database that ships with nao's `example/` directory:
+Create `semantics/semantic_model.yml` in your project folder. Here's an example using the jaffle_shop database that ships with dazense's `example/` directory:
 
 ```yaml
 models:
@@ -159,7 +159,7 @@ Each **model** maps to a database table and defines:
 
 ### Step 7: Restart and test
 
-Restart the app (`nao chat` or `npm run dev` if developing). The agent now has a new `query_metrics` tool.
+Restart the app (`dazense chat` or `npm run dev` if developing). The agent now has a new `query_metrics` tool.
 
 Ask: _"How many orders are there by status?"_
 
@@ -251,22 +251,22 @@ Without the business rule, the agent might include cancelled orders and give a w
 
 ## Part 4: Using the Example Project
 
-nao ships with a ready-made example project you can try immediately, including the semantic layer files we just added.
+dazense ships with a ready-made example project you can try immediately, including the semantic layer files we just added.
 
 ### Step 10: Run the example
 
 ```bash
-# From the nao repo root
+# From the dazense repo root
 cd example
 
 # Set your LLM API key
 export ANTHROPIC_API_KEY=sk-...   # or OPENAI_API_KEY
 
 # Sync the database
-nao sync
+dazense sync
 
 # Launch
-nao chat
+dazense chat
 ```
 
 The example project includes:

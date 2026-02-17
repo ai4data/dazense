@@ -1,4 +1,4 @@
-import type { classify } from '@nao/shared/tools';
+import type { classify } from '@dazense/shared/tools';
 
 import { Block, Bold, CodeBlock, ListItem, Span, Title, TitledList } from '../../lib/markdown';
 

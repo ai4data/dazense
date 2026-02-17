@@ -1,36 +1,36 @@
 <p align="center">
-  <a href="https://getnao.io">
+  <a href="https://dazense.metazense.com">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset=".github/images/Icon_template_IOS.svg" />
-      <img src=".github/images/Icon_template_IOS.svg" height="128" alt="nao logo" />
+      <img src=".github/images/Icon_template_IOS.svg" height="128" alt="dazense logo" />
     </picture>
   </a>
 </p>
 
-<h1 align="center">nao</h1>
+<h1 align="center">dazense</h1>
 
 <h3 align="center">
   The #1 Open-Source Analytics Agent
 </h3>
 
 <p align="center">
-  🌐 <a href="https://getnao.io">Website</a> · 📚 <a href="https://docs.getnao.io">Documentation</a> · 💬 <a href="https://join.slack.com/t/naolabs/shared_invite/zt-3cgdql4up-Az9FxGkTb8Qr34z2Dxp9TQ">Slack</a>
+  🌐 <a href="https://dazense.metazense.com">Website</a> · 📚 <a href="https://dadocs.metazense.com">Documentation</a> · 💬 <a href="https://metazense.slack.com">Slack</a>
 </p>
 
 <br/>
 
 <p align="center">
-  <a href="https://getnao.io">
-    <img src=".github/images/nao_UI.png" alt="nao Chat Interface" />
+  <a href="https://dazense.metazense.com">
+    <img src=".github/images/dazense_UI.png" alt="dazense chat interface" />
   </a>
 </p>
 
 <br/>
 
-## What is nao?
+## What is dazense?
 
-nao is a framework to build and deploy analytics agent. <br/>
-Create the context of your analytics agent with nao-core cli: data, metadata, modeling, rules, etc. <br/>
+dazense is a framework to build and deploy analytics agent. <br/>
+Create the context of your analytics agent with dazense-core cli: data, metadata, modeling, rules, etc. <br/>
 Deploy a UI for anyone to chat with your agent and run analytics on your data.
 
 ## Key Features
@@ -51,18 +51,18 @@ For **business users**:
 
 ## ⚡️ Quickstart your agent in 1 minute
 
-- **Step 1**: Install nao-core package
+- **Step 1**: Install dazense-core package
 
     ```bash
-    pip install nao-core
+    pip install dazense-core
     ```
 
 <br/>
 
-- **Step 2**: Initialize a nao project
+- **Step 2**: Initialize a dazense project
 
     ```bash
-    nao init
+    dazense init
     ```
 
     It will ask you:
@@ -72,12 +72,12 @@ For **business users**:
     - To add an LLM key _(optional)_
     - If you want to setup a Slack connection _(optional)_
 
-    💡 You can skip any optional question and configure them later in your `nao_config.yaml` file.
+    💡 You can skip any optional question and configure them later in your `dazense_config.yaml` file.
 
     This will create:
     - A new folder with your project name
     - An architecture for your context files
-    - A `nao_config.yaml` configuration file
+    - A `dazense_config.yaml` configuration file
     - A `RULES.md` file
 
 <br/>
@@ -87,7 +87,7 @@ For **business users**:
     cd to the project folder and run:
 
     ```bash
-    nao debug
+    dazense debug
     ```
 
 <br/>
@@ -95,7 +95,7 @@ For **business users**:
 - **Step 4**: Synchronize your context
 
     ```bash
-    nao sync
+    dazense sync
     ```
 
     This will populate your context folder with your context files (data, metadata, repos, etc.)
@@ -105,39 +105,39 @@ For **business users**:
 - **Step 5**: Launch the chat and ask questions
 
     ```bash
-    nao chat
+    dazense chat
     ```
 
-    This will start the nao chat UI. It will open the chat interface in your browser at `http://localhost:5005`.
+    This will start the dazense chat UI. It will open the chat interface in your browser at `http://localhost:5005`.
     From there, you can start asking questions to your agent.
 
 ## Evaluation framework
 
 Unit test your agent performance before deploying it to users. First, create a folder `tests/` with questions and expected SQL in yaml.
-Then, measure agent's performance on examples with nao test command:
+Then, measure agent's performance on examples with dazense test command:
 
 ```bash
-nao test
+dazense test
 ```
 
 View results in tests panel:
 
 ```bash
-nao test server
+dazense test server
 ```
 
 ## Commands
 
 ```bash
-nao --help
-Usage: nao COMMAND
+dazense --help
+Usage: dazense COMMAND
 
 ╭─ Commands ────────────────────────────────────────────────────────────────╮
-│ chat         Start the nao chat UI.                                       │
-│ init         Initialize a new nao project.                                │
+│ chat         Start the dazense chat UI.                                   │
+│ init         Initialize a new dazense project.                            │
 │ sync         Sync context from your context sources (databases, repos)    │
 │ test         Measure agent's performance on test examples.                │
-│ debug        Debug and troubleshoot your nao setup.                       │
+│ debug        Debug and troubleshoot your dazense setup.                   │
 │ --help (-h)  Display this message and exit.                               │
 │ --version    Display application version.                                 │
 ╰───────────────────────────────────────────────────────────────────────────╯
@@ -148,36 +148,36 @@ Usage: nao COMMAND
 Pull the image from DockerHub:
 
 ```bash
-docker pull getnao/nao:latest
+docker pull metazense/dazense:latest
 ```
 
-Run nao chat with Docker using the example project bundled in the image:
+Run dazense chat with Docker using the example project bundled in the image:
 
 ```bash
 docker run -d \
-  --name nao \
+  --name dazense \
   -p 5005:5005 \
   -e BETTER_AUTH_URL=http://localhost:5005 \
-  getnao/nao:latest
+  metazense/dazense:latest
 ```
 
-Run nao chat with Docker using your local nao project:
+Run dazense chat with Docker using your local dazense project:
 
 ```bash
 docker run -d \
-  --name nao \
+  --name dazense \
   -p 5005:5005 \
   -e BETTER_AUTH_URL=http://localhost:5005 \
-  -v /path/to/your/nao-project:/app/project \
-  -e NAO_DEFAULT_PROJECT_PATH=/app/project \
-  getnao/nao:latest
+  -v /path/to/your/dazense-project:/app/project \
+  -e DAZENSE_DEFAULT_PROJECT_PATH=/app/project \
+  metazense/dazense:latest
 ```
 
 Access the UI at http://localhost:5005
 
-See the [DockerHub page](https://hub.docker.com/r/getnao/nao) for more details.
+See the [DockerHub page](https://hub.docker.com/r/metazense/dazense) for more details.
 
-For end-to-end self-hosted deployment (for example on Cloud Run with PostgreSQL), see the [Deployment Guide](https://docs.getnao.io/nao-agent/self-hosting/deployment-guide).
+For end-to-end self-hosted deployment (for example on Cloud Run with PostgreSQL), see the [Deployment Guide](https://dadocs.metazense.com/dazense-agent/self-hosting/deployment-guide).
 
 ## 👩🏻‍💻 Development
 
@@ -201,13 +201,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, commands, and guid
 
 - Star the repo
 - Subscribe to releases (Watch → Custom → Releases)
-- Follow us on [LinkedIn](https://www.linkedin.com/company/getnao)
-- Join our [Slack](https://join.slack.com/t/naolabs/shared_invite/zt-3cgdql4up-Az9FxGkTb8Qr34z2Dxp9TQ)
+- Follow us on [LinkedIn](https://www.linkedin.com/company/metazense)
+- Join our [Slack](https://metazense.slack.com)
 - Contribute to the repo!
 
 ## 🫰🏻 Partners
 
-nao Labs is a proud Y Combinator company!
+metazense is a proud Y Combinator company!
 
 <a href="https://ycombinator.com/">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Y_Combinator_logo.svg/1200px-Y_Combinator_logo.svg.png" alt="YCombinator" style="padding: 10px" width="70px">

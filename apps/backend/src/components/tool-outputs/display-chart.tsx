@@ -1,4 +1,4 @@
-import type { displayChart } from '@nao/shared/tools';
+import type { displayChart } from '@dazense/shared/tools';
 
 import { Block } from '../../lib/markdown';
 

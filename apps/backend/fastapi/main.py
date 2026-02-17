@@ -16,10 +16,10 @@ load_dotenv()
 cli_path = Path(__file__).parent.parent.parent / "cli"
 sys.path.insert(0, str(cli_path))
 
-from nao_core.config import NaoConfig, NaoConfigError
-from nao_core.context import get_context_provider
-from nao_core.rules import BusinessRules
-from nao_core.semantic import SemanticEngine, SemanticModel
+from dazense_core.config import DazenseConfig, DazenseConfigError
+from dazense_core.context import get_context_provider
+from dazense_core.rules import BusinessRules
+from dazense_core.semantic import SemanticEngine, SemanticModel
 
 port = int(os.environ.get("PORT", 8005))
 
@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     global scheduler
 
     # Setup periodic refresh if configured
-    refresh_schedule = os.environ.get("NAO_REFRESH_SCHEDULE")
+    refresh_schedule = os.environ.get("DAZENSE_REFRESH_SCHEDULE")
     if refresh_schedule:
         from apscheduler.schedulers.asyncio import AsyncIOScheduler
         from apscheduler.triggers.cron import CronTrigger
@@ -92,7 +92,7 @@ app.add_middleware(
 
 class ExecuteSQLRequest(BaseModel):
     sql: str
-    nao_project_folder: str
+    dazense_project_folder: str
     database_id: str | None = None
 
 
@@ -109,7 +109,7 @@ class RefreshResponse(BaseModel):
 
 
 class QueryMetricsRequest(BaseModel):
-    nao_project_folder: str
+    dazense_project_folder: str
     model_name: str
     measures: list[str]
     dimensions: list[str] = []
@@ -129,7 +129,7 @@ class QueryMetricsResponse(BaseModel):
 
 
 class BusinessContextRequest(BaseModel):
-    nao_project_folder: str
+    dazense_project_folder: str
     category: str | None = None
     concepts: list[str] = []
 
@@ -140,7 +140,7 @@ class BusinessContextResponse(BaseModel):
 
 
 class ClassifyRequest(BaseModel):
-    nao_project_folder: str
+    dazense_project_folder: str
     name: str | None = None
     tags: list[str] = []
 
@@ -167,19 +167,19 @@ async def health_check():
     """Health check endpoint with context status."""
     try:
         provider = get_context_provider()
-        context_source = os.environ.get("NAO_CONTEXT_SOURCE", "local")
+        context_source = os.environ.get("DAZENSE_CONTEXT_SOURCE", "local")
         return HealthResponse(
             status="ok",
             context_source=context_source,
             context_initialized=provider.is_initialized(),
-            refresh_schedule=os.environ.get("NAO_REFRESH_SCHEDULE"),
+            refresh_schedule=os.environ.get("DAZENSE_REFRESH_SCHEDULE"),
         )
     except Exception:
         return HealthResponse(
             status="error",
-            context_source=os.environ.get("NAO_CONTEXT_SOURCE", "local"),
+            context_source=os.environ.get("DAZENSE_CONTEXT_SOURCE", "local"),
             context_initialized=False,
-            refresh_schedule=os.environ.get("NAO_REFRESH_SCHEDULE"),
+            refresh_schedule=os.environ.get("DAZENSE_REFRESH_SCHEDULE"),
         )
 
 
@@ -218,16 +218,16 @@ async def refresh_context():
 @app.post("/execute_sql", response_model=ExecuteSQLResponse)
 async def execute_sql(request: ExecuteSQLRequest):
     try:
-        # Load the nao config from the project folder
-        project_path = Path(request.nao_project_folder)
+        # Load the dazense config from the project folder
+        project_path = Path(request.dazense_project_folder)
         os.chdir(project_path)
-        config = NaoConfig.try_load(project_path, raise_on_error=True)
+        config = DazenseConfig.try_load(project_path, raise_on_error=True)
         assert config is not None
 
         if len(config.databases) == 0:
             raise HTTPException(
                 status_code=400,
-                detail="No databases configured in nao_config.yaml",
+                detail="No databases configured in dazense_config.yaml",
             )
 
         # Determine which database to use
@@ -284,7 +284,7 @@ async def execute_sql(request: ExecuteSQLRequest):
         )
     except HTTPException:
         raise
-    except NaoConfigError as e:
+    except DazenseConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -293,7 +293,7 @@ async def execute_sql(request: ExecuteSQLRequest):
 @app.post("/query_metrics", response_model=QueryMetricsResponse)
 async def query_metrics(request: QueryMetricsRequest):
     try:
-        project_path = Path(request.nao_project_folder)
+        project_path = Path(request.dazense_project_folder)
         os.chdir(project_path)
 
         semantic_model = SemanticModel.load(project_path)
@@ -303,7 +303,7 @@ async def query_metrics(request: QueryMetricsRequest):
                 detail="No semantic_model.yml found in semantics/ folder",
             )
 
-        config = NaoConfig.try_load(project_path, raise_on_error=True)
+        config = DazenseConfig.try_load(project_path, raise_on_error=True)
         assert config is not None
 
         engine = SemanticEngine(semantic_model, config.databases)
@@ -328,7 +328,7 @@ async def query_metrics(request: QueryMetricsRequest):
         )
     except HTTPException:
         raise
-    except NaoConfigError as e:
+    except DazenseConfigError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -339,7 +339,7 @@ async def query_metrics(request: QueryMetricsRequest):
 @app.post("/business_context", response_model=BusinessContextResponse)
 async def business_context(request: BusinessContextRequest):
     try:
-        project_path = Path(request.nao_project_folder)
+        project_path = Path(request.dazense_project_folder)
 
         business_rules = BusinessRules.load(project_path)
         if business_rules is None:
@@ -368,7 +368,7 @@ async def business_context(request: BusinessContextRequest):
 @app.post("/classify", response_model=ClassifyResponse)
 async def classify(request: ClassifyRequest):
     try:
-        project_path = Path(request.nao_project_folder)
+        project_path = Path(request.dazense_project_folder)
 
         business_rules = BusinessRules.load(project_path)
         if business_rules is None:
@@ -398,7 +398,7 @@ async def classify(request: ClassifyRequest):
 
 
 if __name__ == "__main__":
-    nao_project_folder = os.getenv("NAO_DEFAULT_PROJECT_PATH")
-    if nao_project_folder:
-        os.chdir(nao_project_folder)
+    dazense_project_folder = os.getenv("DAZENSE_DEFAULT_PROJECT_PATH")
+    if dazense_project_folder:
+        os.chdir(dazense_project_folder)
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

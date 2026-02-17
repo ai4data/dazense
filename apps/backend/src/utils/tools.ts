@@ -10,25 +10,25 @@ const MCP_TOOL_SEPARATOR = '__';
 export const EXCLUDED_DIRS = ['.meta'];
 
 /**
- * Cache for .naoignore patterns per project folder.
+ * Cache for .dazenseignore patterns per project folder.
  */
-const naoignoreCache = new Map<string, string[]>();
+const dazenseignoreCache = new Map<string, string[]>();
 
 /**
- * Loads and parses the .naoignore file from the project folder.
+ * Loads and parses the .dazenseignore file from the project folder.
  * Returns an array of patterns. Results are cached per project folder.
  */
-export const loadNaoignorePatterns = (projectFolder: string): string[] => {
-	if (naoignoreCache.has(projectFolder)) {
-		return naoignoreCache.get(projectFolder)!;
+export const loadDazenseignorePatterns = (projectFolder: string): string[] => {
+	if (dazenseignoreCache.has(projectFolder)) {
+		return dazenseignoreCache.get(projectFolder)!;
 	}
 
-	const naoignorePath = path.join(projectFolder, '.naoignore');
+	const dazenseignorePath = path.join(projectFolder, '.dazenseignore');
 	let patterns: string[] = [];
 
 	try {
-		if (fs.existsSync(naoignorePath)) {
-			const content = fs.readFileSync(naoignorePath, 'utf-8');
+		if (fs.existsSync(dazenseignorePath)) {
+			const content = fs.readFileSync(dazenseignorePath, 'utf-8');
 			patterns = content
 				.split('\n')
 				.map((line) => line.trim())
@@ -38,25 +38,25 @@ export const loadNaoignorePatterns = (projectFolder: string): string[] => {
 		// If we can't read the file, return empty patterns
 	}
 
-	naoignoreCache.set(projectFolder, patterns);
+	dazenseignoreCache.set(projectFolder, patterns);
 	return patterns;
 };
 
 /**
- * Clears the naoignore cache. Useful for testing or when the .naoignore file changes.
+ * Clears the dazenseignore cache. Useful for testing or when the .dazenseignore file changes.
  */
-export const clearNaoignoreCache = (): void => {
-	naoignoreCache.clear();
+export const clearDazenseignoreCache = (): void => {
+	dazenseignoreCache.clear();
 };
 
 /**
- * Checks if a path matches any .naoignore pattern.
+ * Checks if a path matches any .dazenseignore pattern.
  * @param relativePath - Path relative to the project folder (e.g., "templates/foo.md")
  * @param projectFolder - The project folder path
  * @returns true if the path should be ignored
  */
-export const isIgnoredByNaoignore = (relativePath: string, projectFolder: string): boolean => {
-	const patterns = loadNaoignorePatterns(projectFolder);
+export const isIgnoredByDazenseignore = (relativePath: string, projectFolder: string): boolean => {
+	const patterns = loadDazenseignorePatterns(projectFolder);
 
 	// Normalize the path (remove leading slash if present)
 	const normalizedPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
@@ -93,7 +93,7 @@ export const isIgnoredByNaoignore = (relativePath: string, projectFolder: string
 };
 
 /**
- * Checks if a real filesystem path should be ignored based on .naoignore.
+ * Checks if a real filesystem path should be ignored based on .dazenseignore.
  * @param realPath - Absolute filesystem path
  * @param projectFolder - The project folder path
  * @returns true if the path should be ignored
@@ -102,12 +102,12 @@ export const isIgnoredPath = (realPath: string, projectFolder: string): boolean 
 	const resolved = path.resolve(realPath);
 	const relativePath = path.relative(projectFolder, resolved);
 
-	// Paths outside project folder are not subject to naoignore
+	// Paths outside project folder are not subject to dazenseignore
 	if (relativePath.startsWith('..')) {
 		return false;
 	}
 
-	return isIgnoredByNaoignore(relativePath, projectFolder);
+	return isIgnoredByDazenseignore(relativePath, projectFolder);
 };
 
 /**
@@ -127,7 +127,7 @@ export const isExcludedEntry = (name: string): boolean => {
 
 /**
  * Checks if an entry should be excluded from directory listings.
- * Combines excluded directories and .naoignore patterns.
+ * Combines excluded directories and .dazenseignore patterns.
  * @param entryName - The name of the entry (file or directory)
  * @param parentPath - The parent directory path relative to project folder
  * @param projectFolder - The project folder path
@@ -139,14 +139,14 @@ export const shouldExcludeEntry = (entryName: string, parentPath: string, projec
 		return true;
 	}
 
-	// Then check naoignore patterns
+	// Then check dazenseignore patterns
 	const relativePath = parentPath ? `${parentPath}/${entryName}` : entryName;
-	return isIgnoredByNaoignore(relativePath, projectFolder);
+	return isIgnoredByDazenseignore(relativePath, projectFolder);
 };
 
 /**
  * Checks if a given path is within the project folder, not in an excluded directory,
- * and not ignored by .naoignore.
+ * and not ignored by .dazenseignore.
  */
 export const isWithinProjectFolder = (filePath: string, projectFolder: string): boolean => {
 	const resolved = path.resolve(filePath);
@@ -168,7 +168,7 @@ export const isWithinProjectFolder = (filePath: string, projectFolder: string): 
  * - `/foo/bar` → `{projectFolder}/foo/bar`
  * - `foo/bar` → `{projectFolder}/foo/bar`
  * - `/` or empty → `{projectFolder}`
- * @throws Error if the resolved path escapes the project folder or is ignored by .naoignore
+ * @throws Error if the resolved path escapes the project folder or is ignored by .dazenseignore
  */
 export const toRealPath = (virtualPath: string, projectFolder: string): string => {
 	// Strip leading slash to make it relative to project folder
@@ -188,9 +188,9 @@ export const toRealPath = (virtualPath: string, projectFolder: string): string =
 		throw new Error(`Access denied: path '${virtualPath}' is in an excluded directory`);
 	}
 
-	// Check if path is ignored by .naoignore
+	// Check if path is ignored by .dazenseignore
 	if (isIgnoredPath(resolvedPath, projectFolder)) {
-		throw new Error(`Access denied: path '${virtualPath}' is ignored by .naoignore`);
+		throw new Error(`Access denied: path '${virtualPath}' is ignored by .dazenseignore`);
 	}
 
 	return resolvedPath;

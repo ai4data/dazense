@@ -4,10 +4,10 @@
 
 ## Table Metadata
 
-| Property         | Value |
-| ---------------- | ----- |
-| **Row Count**    | 7     |
-| **Column Count** | 2     |
+| Property | Value |
+|----------|-------|
+| **Row Count** | 7 |
+| **Column Count** | 2 |
 
 ## Description
 

@@ -98,7 +98,7 @@ export const initializeDefaultOrganizationForFirstUser = async (userId: string):
 		await tx.insert(s.orgMember).values({ orgId: org.id, userId, role: 'admin' }).execute();
 
 		// Create default project if path is configured
-		const projectPath = process.env.NAO_DEFAULT_PROJECT_PATH;
+		const projectPath = process.env.DAZENSE_DEFAULT_PROJECT_PATH;
 		if (projectPath) {
 			const [existingProject] = await tx
 				.select()

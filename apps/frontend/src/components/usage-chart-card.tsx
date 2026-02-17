@@ -1,4 +1,4 @@
-import type { UsageRecord } from '@nao/backend/usage';
+import type { UsageRecord } from '@dazense/backend/usage';
 import { ChartDisplay } from '@/components/tool-calls/display-chart';
 import { SettingsCard } from '@/components/ui/settings-card';
 

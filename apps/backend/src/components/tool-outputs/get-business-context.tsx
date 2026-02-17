@@ -1,4 +1,4 @@
-import type { getBusinessContext } from '@nao/shared/tools';
+import type { getBusinessContext } from '@dazense/shared/tools';
 
 import { Block, Bold, ListItem, Span, Title, TitledList } from '../../lib/markdown';
 

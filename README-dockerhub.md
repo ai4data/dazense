@@ -1,8 +1,8 @@
-# nao - The #1 Open-Source Analytics Agent
+# dazense - The #1 Open-Source Analytics Agent
 
-nao is a framework to build and deploy analytics agents. Create context for your analytics agent with the nao-core CLI, then deploy a chat UI for anyone to interact with your data.
+dazense is a framework to build and deploy analytics agents. Create context for your analytics agent with the dazense-core CLI, then deploy a chat UI for anyone to interact with your data.
 
-🌐 [Website](https://getnao.io) · 📚 [Documentation](https://docs.getnao.io) · 💬 [Slack](https://join.slack.com/t/naolabs/shared_invite/zt-3cgdql4up-Az9FxGkTb8Qr34z2Dxp9TQ) · 🐙 [GitHub](https://github.com/getnao/nao)
+🌐 [Website](https://dazense.metazense.com) · 📚 [Documentation](https://dadocs.metazense.com) · 💬 [Slack](https://metazense.slack.com) · 🐙 [GitHub](https://github.com/metazense/dazense)
 
 ## Docker
 
@@ -25,18 +25,18 @@ nao is a framework to build and deploy analytics agents. Create context for your
 
 ```bash
 docker run -d \
-  --name nao \
+  --name dazense \
   -p 5005:5005 \
   -e OPENAI_API_KEY=sk-... \
   -v /path/to/your/project:/app/project \
-  getnao/nao:latest
+  metazense/dazense:latest
 ```
 
 ## Environment Variables
 
 | Variable                   | Required | Description                                           |
 | -------------------------- | -------- | ----------------------------------------------------- |
-| `NAO_DEFAULT_PROJECT_PATH` | Yes      | Path to your nao project (default: `/app/example`)    |
+| `DAZENSE_DEFAULT_PROJECT_PATH` | Yes      | Path to your dazense project (default: `/app/example`) |
 | `OPENAI_API_KEY`           | No\*     | OpenAI API key                                        |
 | `ANTHROPIC_API_KEY`        | No\*     | Anthropic API key                                     |
 | `BETTER_AUTH_SECRET`       | No       | Secret key for authentication                         |
@@ -54,22 +54,22 @@ docker run -d \
 
 ## Volumes
 
-Mount your nao project directory to make it available to the agent:
+Mount your dazense project directory to make it available to the agent:
 
 ```bash
--v /path/to/your/nao-project:/app/project
+-v /path/to/your/dazense-project:/app/project
 ```
 
-Then set `NAO_DEFAULT_PROJECT_PATH=/app/project`, you can also use the example project by setting `NAO_DEFAULT_PROJECT_PATH=/app/example`.
+Then set `DAZENSE_DEFAULT_PROJECT_PATH=/app/project`, you can also use the example project by setting `DAZENSE_DEFAULT_PROJECT_PATH=/app/example`.
 
 ## Docker run example
 
 ```bash
 docker run -d \
-  --name nao \
+  --name dazense \
   -p 5005:5005 \
-  -e NAO_DEFAULT_PROJECT_PATH=/app/project \
-  getnao/nao:latest
+  -e DAZENSE_DEFAULT_PROJECT_PATH=/app/project \
+  metazense/dazense:latest
 ```
 
 Then navigate to http://localhost:5005 to access the UI (or to any URL you configured).
@@ -84,4 +84,4 @@ Then navigate to http://localhost:5005 to access the UI (or to any URL you confi
 
 ## License
 
-Apache 2.0 - See [LICENSE](https://github.com/naolabs/chat/blob/main/LICENSE)
+Apache 2.0 - See [LICENSE](https://github.com/dazense/chat/blob/main/LICENSE)

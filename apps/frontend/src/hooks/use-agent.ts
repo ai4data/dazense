@@ -8,8 +8,8 @@ import { useMemoObject } from './useMemoObject';
 import { usePrevRef } from './use-prev';
 import type { ScrollToBottom, ScrollToBottomOptions } from 'use-stick-to-bottom';
 import type { UseChatHelpers } from '@ai-sdk/react';
-import type { UIMessage } from '@nao/backend/chat';
-import type { LlmProvider } from '@nao/backend/llm';
+import type { UIMessage } from '@dazense/backend/chat';
+import type { LlmProvider } from '@dazense/backend/llm';
 import { useChatQuery, useSetChat } from '@/queries/use-chat-query';
 import { trpc } from '@/main';
 import { agentService } from '@/services/agents';
@@ -21,7 +21,7 @@ export type ModelSelection = {
 	modelId: string;
 } | null;
 
-const MODEL_STORAGE_KEY = 'nao-selected-model';
+const MODEL_STORAGE_KEY = 'dazense-selected-model';
 
 function getStoredModel(): ModelSelection {
 	try {

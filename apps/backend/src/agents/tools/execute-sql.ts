@@ -1,5 +1,5 @@
-import type { executeSql } from '@nao/shared/tools';
-import { executeSql as schemas } from '@nao/shared/tools';
+import type { executeSql } from '@dazense/shared/tools';
+import { executeSql as schemas } from '@dazense/shared/tools';
 
 import { ExecuteSqlOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { env } from '../../env';
@@ -9,7 +9,7 @@ export async function executeQuery(
 	{ sql_query, database_id }: executeSql.Input,
 	context: ToolContext,
 ): Promise<executeSql.Output> {
-	const naoProjectFolder = context.projectFolder;
+	const dazenseProjectFolder = context.projectFolder;
 
 	const response = await fetch(`http://localhost:${env.FASTAPI_PORT}/execute_sql`, {
 		method: 'POST',
@@ -18,7 +18,7 @@ export async function executeQuery(
 		},
 		body: JSON.stringify({
 			sql: sql_query,
-			nao_project_folder: naoProjectFolder,
+			dazense_project_folder: dazenseProjectFolder,
 			...(database_id && { database_id }),
 		}),
 	});

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build script for nao-core package.
+"""Build script for dazense-core package.
 
 This script:
 1. Optionally bumps the version
@@ -20,7 +20,7 @@ from typing import Annotated
 
 from cyclopts import App, Parameter
 
-app = App(help="Build and package nao-core CLI.")
+app = App(help="Build and package dazense-core CLI.")
 
 
 class BumpType(Enum):
@@ -35,6 +35,27 @@ def run(cmd: list[str], cwd: Path | None = None, env: dict | None = None) -> Non
     if result.returncode != 0:
         print(f"❌ Command failed: {' '.join(cmd)}")
         sys.exit(1)
+
+
+def resolve_cmd(candidates: list[str]) -> str:
+    """Resolve a command from a list of candidates (with PATHEXT support on Windows)."""
+    for name in candidates:
+        resolved = shutil.which(name)
+        if resolved:
+            return resolved
+    return ""
+
+
+def require_cmd(name: str, candidates: list[str]) -> str:
+    """Require a command to be available on PATH, otherwise exit with help."""
+    resolved = resolve_cmd(candidates)
+    if resolved:
+        return resolved
+
+    print(f"❌ Required tool not found: {name}")
+    print("   Please install it and ensure it is on your PATH.")
+    print(f"   Tried: {', '.join(candidates)}")
+    sys.exit(1)
 
 
 def get_git_commit(project_root: Path) -> str:
@@ -113,7 +134,7 @@ def update_version(cli_dir: Path, new_version: str) -> None:
     pyproject.write_text(content)
 
     # Update __init__.py
-    init_file = cli_dir / "nao_core" / "__init__.py"
+    init_file = cli_dir / "dazense_core" / "__init__.py"
     content = init_file.read_text()
     content = re.sub(
         r'^__version__\s*=\s*"[^"]+"',
@@ -130,8 +151,14 @@ def build_server(project_root: Path, output_dir: Path) -> None:
     """Build the frontend and backend into a standalone server."""
     backend_dir = project_root / "apps" / "backend"
     frontend_dir = project_root / "apps" / "frontend"
+    if sys.platform == "win32":
+        npm_cmd = require_cmd("npm", ["npm.cmd", "npm.exe", "npm"])
+        bun_cmd = require_cmd("bun", ["bun.exe", "bun"])
+    else:
+        npm_cmd = require_cmd("npm", ["npm"])
+        bun_cmd = require_cmd("bun", ["bun"])
 
-    print("📦 Building nao chat server...")
+    print("📦 Building dazense chat server...")
     print(f"   Project root: {project_root}")
 
     # Create output directory
@@ -153,7 +180,7 @@ def build_server(project_root: Path, output_dir: Path) -> None:
 
     # Step 1: Build frontend
     print("\n🎨 Building frontend...")
-    run(["npm", "run", "build"], cwd=frontend_dir)
+    run([npm_cmd, "run", "build"], cwd=frontend_dir)
 
     # Step 2: Copy frontend dist to backend public folder
     print("\n📁 Copying frontend assets to backend...")
@@ -164,12 +191,15 @@ def build_server(project_root: Path, output_dir: Path) -> None:
 
     # Step 3: Compile backend CLI with Bun
     print("\n⚡ Compiling backend CLI with Bun...")
-    run(["npm", "run", "build:standalone"], cwd=backend_dir)
+    run([npm_cmd, "run", "build:standalone"], cwd=backend_dir)
 
     # Step 4: Copy the compiled binary to output directory
     print("\n📦 Copying binary to output directory...")
-    binary_src = backend_dir / "nao-chat-server"
-    binary_dst = output_dir / "nao-chat-server"
+    binary_base = "dazense-chat-server"
+    binary_src = backend_dir / binary_base
+    if sys.platform == "win32":
+        binary_src = backend_dir / f"{binary_base}.exe"
+    binary_dst = output_dir / binary_base
     shutil.copy2(binary_src, binary_dst)
     print(f"   Binary: {binary_dst}")
 
@@ -258,7 +288,7 @@ def build_server(project_root: Path, output_dir: Path) -> None:
     print(f"   Build info: {build_info_path} (commit: {commit_short})")
 
     print("\n✓ Server build complete!")
-    print(f"   Binary: {output_dir / 'nao-chat-server'}")
+    print(f"   Binary: {output_dir / 'dazense-chat-server'}")
     print(f"   Assets: {output_public}")
     print(f"   FastAPI: {fastapi_dst}")
     if rg_src:
@@ -296,14 +326,14 @@ def build(
         Parameter(help="Bump version before building (patch, minor, major)"),
     ] = None,
 ) -> None:
-    """Build the nao-core package.
+    """Build the dazense-core package.
 
     Builds the frontend, compiles the backend with Bun, and creates a Python wheel.
     """
     cli_dir = Path(__file__).parent
     project_root = cli_dir.parent
-    output_dir = cli_dir / "nao_core" / "bin"
-    binary_path = output_dir / "nao-chat-server"
+    output_dir = cli_dir / "dazense_core" / "bin"
+    binary_path = output_dir / "dazense-chat-server"
     public_dir = output_dir / "public"
     sqlite_migrations_dir = output_dir / "migrations-sqlite"
     postgres_migrations_dir = output_dir / "migrations-postgres"

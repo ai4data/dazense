@@ -1,11 +1,11 @@
-import { grep } from '@nao/shared/tools';
+import { grep } from '@dazense/shared/tools';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
 import { GrepOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { createTool } from '../../types/tools';
-import { isWithinProjectFolder, loadNaoignorePatterns, toRealPath, toVirtualPath } from '../../utils/tools';
+import { isWithinProjectFolder, loadDazenseignorePatterns, toRealPath, toVirtualPath } from '../../utils/tools';
 
 /**
  * Gets the path to the ripgrep binary.
@@ -83,10 +83,10 @@ export default createTool({
 			args.push('--glob', glob);
 		}
 
-		// Add .naoignore patterns as exclusions
-		const naoignorePatterns = loadNaoignorePatterns(projectFolder);
-		for (const ignorePattern of naoignorePatterns) {
-			// Convert naoignore patterns to ripgrep glob exclusions
+		// Add .dazenseignore patterns as exclusions
+		const dazenseignorePatterns = loadDazenseignorePatterns(projectFolder);
+		for (const ignorePattern of dazenseignorePatterns) {
+			// Convert dazenseignore patterns to ripgrep glob exclusions
 			const cleanPattern = ignorePattern.endsWith('/') ? ignorePattern.slice(0, -1) : ignorePattern;
 			args.push('--glob', `!${cleanPattern}`);
 			args.push('--glob', `!${cleanPattern}/**`);

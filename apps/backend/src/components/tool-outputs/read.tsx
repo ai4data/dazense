@@ -1,4 +1,4 @@
-import type { readFile } from '@nao/shared/tools';
+import type { readFile } from '@dazense/shared/tools';
 
 import { Block } from '../../lib/markdown';
 import { formatSize } from '../../utils/utils';

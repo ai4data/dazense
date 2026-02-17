@@ -37,7 +37,7 @@ const envSchema = z.object({
 	APP_COMMIT: z.string().default('unknown'),
 	APP_BUILD_DATE: z.string().default(''),
 
-	NAO_DEFAULT_PROJECT_PATH: z.string().optional(),
+	DAZENSE_DEFAULT_PROJECT_PATH: z.string().optional(),
 
 	MCP_JSON_FILE_PATH: z.string().optional(),
 

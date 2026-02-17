@@ -1,4 +1,4 @@
-import { readFile } from '@nao/shared/tools';
+import { readFile } from '@dazense/shared/tools';
 import fs from 'fs/promises';
 
 import { ReadOutput, renderToModelOutput } from '../../components/tool-outputs';

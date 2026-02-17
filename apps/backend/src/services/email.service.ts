@@ -84,8 +84,8 @@ class EmailService {
 		const isNewUser = !!temporaryPassword;
 
 		const subject = isNewUser
-			? `You've been invited to ${projectName} on nao`
-			: `You've been added to ${projectName} on nao`;
+			? `You've been invited to ${projectName} on dazense`
+			: `You've been added to ${projectName} on dazense`;
 
 		const html = renderToString(
 			UserAddedToProjectEmail({
@@ -99,11 +99,11 @@ class EmailService {
 
 		const text = isNewUser
 			? `
-Welcome to nao!
+Welcome to dazense!
 
 Hi ${userName},
 
-You've been invited to join the project "${projectName}" on nao.
+You've been invited to join the project "${projectName}" on dazense.
 
 Your login credentials:
 Email: ${to || ''}
@@ -116,23 +116,23 @@ Login here: ${loginUrl}
 If you have any questions, please contact your project administrator.
 
 ---
-This is an automated message from nao.
+This is an automated message from dazense.
         `.trim()
 			: `
 New Project Access
 
 Hi ${userName},
 
-Great news! You've been added to the project "${projectName}" on nao.
+Great news! You've been added to the project "${projectName}" on dazense.
 
-You can now access this project using your existing nao account.
+You can now access this project using your existing dazense account.
 
 Login here: ${loginUrl}
 
 If you have any questions about this project, please contact your project administrator.
 
 ---
-This is an automated message from nao.
+This is an automated message from dazense.
         `.trim();
 
 		return { subject, html, text };
@@ -144,7 +144,7 @@ This is an automated message from nao.
 		temporaryPassword,
 		loginUrl,
 	}: EmailData): CreatedEmailData {
-		const subject = `Your password on the project ${projectName} has been reset on nao`;
+		const subject = `Your password on the project ${projectName} has been reset on dazense`;
 
 		const html = renderToString(
 			ResetPasswordEmail({
@@ -156,7 +156,7 @@ This is an automated message from nao.
 		);
 
 		const text = `
-Password Reset - nao
+Password Reset - dazense
 
 Hi ${userName},
 
@@ -171,7 +171,7 @@ Login here: ${loginUrl}
 If you did not request this password reset, please contact your project administrator immediately.
 
 ---
-This is an automated message from nao.
+This is an automated message from dazense.
         `.trim();
 
 		return { subject, html, text };

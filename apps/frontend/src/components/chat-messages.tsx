@@ -9,7 +9,7 @@ import { TextShimmer } from './ui/text-shimmer';
 import { MessageActions } from './chat-message-actions';
 import { ChatError } from './chat-error';
 import { FollowUpSuggestions } from './chat-follow-up-suggestions';
-import type { UIMessage } from '@nao/backend/chat';
+import type { UIMessage } from '@dazense/backend/chat';
 import type { MessageGroup } from '@/types/messages';
 import {
 	Conversation,

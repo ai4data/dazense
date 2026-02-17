@@ -1,5 +1,5 @@
-import { pluralize } from '@nao/shared';
-import type { searchFiles } from '@nao/shared/tools';
+import { pluralize } from '@dazense/shared';
+import type { searchFiles } from '@dazense/shared/tools';
 
 import { Block, ListItem, TitledList } from '../../lib/markdown';
 import { formatSize } from '../../utils/utils';

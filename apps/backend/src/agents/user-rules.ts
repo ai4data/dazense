@@ -8,7 +8,7 @@ import { env } from '../env';
  * Reads user-defined rules from RULES.md in the project folder if it exists
  */
 export function getUserRules(): string | null {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 
 	if (!projectFolder) {
 		return null;
@@ -35,7 +35,7 @@ type Connection = {
 };
 
 export function getConnections(): Connection[] | null {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 
 	if (!projectFolder) {
 		return null;
@@ -87,7 +87,7 @@ export type SemanticModelInfo = {
 };
 
 export function getSemanticModels(): SemanticModelInfo[] | null {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	if (!projectFolder) {
 		return null;
 	}
@@ -132,7 +132,7 @@ export type BusinessRuleInfo = {
 };
 
 export function getBusinessRules(): BusinessRuleInfo[] | null {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	if (!projectFolder) {
 		return null;
 	}
@@ -169,7 +169,7 @@ export type ClassificationInfo = {
 };
 
 export function getClassifications(): ClassificationInfo[] | null {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	if (!projectFolder) {
 		return null;
 	}

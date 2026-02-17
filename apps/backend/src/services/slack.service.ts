@@ -44,7 +44,7 @@ export class SlackService {
 
 		const initialMessage = await this._slackClient.chat.postMessage({
 			channel: this._channel,
-			text: '🔄 nao is answering...',
+			text: '🔄 dazense is answering...',
 			thread_ts: this._threadTs,
 		});
 		this._initialMessageTs = initialMessage.ts;
@@ -77,7 +77,7 @@ export class SlackService {
 	private async _checkUserBelongsToProject(): Promise<void> {
 		const role = await projectQueries.getUserRoleInProject(this._projectId, this._user.id);
 		if (role !== 'admin' && role !== 'user') {
-			const fullMessage = `❌ You don't have permission to use nao in this project. Please contact an administrator.`;
+			const fullMessage = `❌ You don't have permission to use dazense in this project. Please contact an administrator.`;
 			await this._slackClient.chat.postMessage({
 				channel: this._channel,
 				text: fullMessage,

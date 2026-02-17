@@ -1,4 +1,4 @@
-import type { UIMessage } from '@nao/backend/chat';
+import type { UIMessage } from '@dazense/backend/chat';
 import type { MessageGroup } from '@/types/messages';
 
 export const serializeMessageForCopy = (message: UIMessage): string => {

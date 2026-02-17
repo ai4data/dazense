@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * nao-chat-server CLI
+ * dazense-chat-server CLI
  *
  * Usage:
- *   nao-chat-server migrate
- *   nao-chat-server serve [--port <port>] [--host <host>]
- *   nao-chat-server (defaults to serve)
+ *   dazense-chat-server migrate
+ *   dazense-chat-server serve [--port <port>] [--host <host>]
+ *   dazense-chat-server (defaults to serve)
  */
 
 import './env';
@@ -18,7 +18,7 @@ import { startServer } from './app';
 import dbConfig, { Dialect } from './db/dbConfig';
 import { runMigrations } from './db/migrate';
 
-const SECRET_FILE_NAME = '.nao-secret';
+const SECRET_FILE_NAME = '.dazense-secret';
 
 interface BuildInfo {
 	commit: string;
@@ -34,7 +34,10 @@ function getExecutableDir(): string {
 	// When running as script:
 	//   - Bun.main points to the .ts file being executed
 	//   - process.execPath points to the bun executable
-	const isCompiled = Bun.main.startsWith('/$bunfs/');
+	const isCompiled =
+		Bun.main.startsWith('/$bunfs/') ||
+		Bun.main.includes('~BUN') ||
+		path.basename(process.execPath).startsWith('dazense-chat-server');
 
 	if (isCompiled) {
 		// Use the actual binary location on disk
@@ -112,10 +115,10 @@ function ensureAuthSecret(): void {
 
 function printHelp(): void {
 	console.log(`
-nao-chat-server - nao Chat Server
+dazense-chat-server - dazense Chat Server
 
 USAGE:
-    nao-chat-server <command> [options]
+    dazense-chat-server <command> [options]
 
 COMMANDS:
     serve       Run migrations and start the chat server (default)
@@ -136,13 +139,13 @@ ENVIRONMENT VARIABLES:
 
 EXAMPLES:
     # SQLite (default: sqlite:./db.sqlite)
-    nao-chat-server serve --port 3000
+    dazense-chat-server serve --port 3000
 
     # SQLite with custom path
-    DB_URI=sqlite:./data/chat.db nao-chat-server serve
+    DB_URI=sqlite:./data/chat.db dazense-chat-server serve
 
     # PostgreSQL
-    DB_URI=postgres://user:pass@localhost/mydb nao-chat-server serve
+    DB_URI=postgres://user:pass@localhost/mydb dazense-chat-server serve
 `);
 }
 
@@ -205,7 +208,7 @@ async function runServe(options: Record<string, string>): Promise<void> {
 		process.exit(1);
 	}
 
-	console.log(`\n🚀 Starting nao chat server...`);
+	console.log(`\n🚀 Starting dazense chat server...`);
 	if (buildInfo) {
 		console.log(`   Build: ${buildInfo.commitShort} (${buildInfo.buildTime})`);
 	}

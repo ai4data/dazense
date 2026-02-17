@@ -1,5 +1,5 @@
-import { pluralize } from '@nao/shared';
-import type { list } from '@nao/shared/tools';
+import { pluralize } from '@dazense/shared';
+import type { list } from '@dazense/shared/tools';
 
 import { Block, List, ListItem, Span } from '../../lib/markdown';
 import { formatSize } from '../../utils/utils';

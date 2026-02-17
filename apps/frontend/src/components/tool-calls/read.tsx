@@ -1,6 +1,6 @@
 import { useToolCallContext } from '../../contexts/tool-call.provider';
 import { ToolCallWrapper } from './tool-call-wrapper';
-import type { readFile } from '@nao/shared/tools';
+import type { readFile } from '@dazense/shared/tools';
 import { isToolSettled } from '@/lib/ai';
 
 export const ReadToolCall = () => {

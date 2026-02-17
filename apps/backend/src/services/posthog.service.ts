@@ -1,9 +1,9 @@
 /**
- * PostHog analytics tracking for nao backend.
+ * PostHog analytics tracking for dazense backend.
  *
  * Tracking is enabled when POSTHOG_DISABLED is not 'true'.
  */
-import { getPosthogConfig, PosthogConfig } from '@nao/shared/posthog';
+import { getPosthogConfig, PosthogConfig } from '@dazense/shared/posthog';
 import { PostHog } from 'posthog-node';
 
 import { env } from '../env';

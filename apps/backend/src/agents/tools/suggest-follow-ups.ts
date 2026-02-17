@@ -1,4 +1,4 @@
-import { suggestFollowUps } from '@nao/shared/tools';
+import { suggestFollowUps } from '@dazense/shared/tools';
 import { tool } from 'ai';
 
 export default tool<suggestFollowUps.Input, suggestFollowUps.Output>({

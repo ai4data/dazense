@@ -1,5 +1,5 @@
 {
-	"name": "@nao/frontend",
+	"name": "@dazense/frontend",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -12,8 +12,8 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
-		"@nao/shared": "*",
-		"@nao/backend": "*",
+		"@dazense/shared": "*",
+		"@dazense/backend": "*",
 		"@ai-sdk/react": "^3.0.44",
 		"@radix-ui/react-accordion": "^1.2.12",
 		"@radix-ui/react-alert-dialog": "^1.1.15",

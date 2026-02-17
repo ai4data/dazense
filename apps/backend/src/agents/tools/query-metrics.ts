@@ -1,5 +1,5 @@
-import type { queryMetrics } from '@nao/shared/tools';
-import { queryMetrics as schemas } from '@nao/shared/tools';
+import type { queryMetrics } from '@dazense/shared/tools';
+import { queryMetrics as schemas } from '@dazense/shared/tools';
 
 import { QueryMetricsOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { env } from '../../env';
@@ -13,7 +13,7 @@ async function executeQueryMetrics(
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			nao_project_folder: context.projectFolder,
+			dazense_project_folder: context.projectFolder,
 			model_name,
 			measures,
 			dimensions,

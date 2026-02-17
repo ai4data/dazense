@@ -84,7 +84,7 @@ export const getAllUsersWithRoles = async (projectId: string): Promise<UserWithR
 };
 
 export const checkUserHasProject = async (userId: string): Promise<DBProject | null> => {
-	const projectPath = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectPath = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	if (!projectPath) {
 		return null;
 	}

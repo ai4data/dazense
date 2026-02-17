@@ -1,5 +1,5 @@
-import type { getBusinessContext } from '@nao/shared/tools';
-import { getBusinessContext as schemas } from '@nao/shared/tools';
+import type { getBusinessContext } from '@dazense/shared/tools';
+import { getBusinessContext as schemas } from '@dazense/shared/tools';
 
 import { GetBusinessContextOutput, renderToModelOutput } from '../../components/tool-outputs';
 import { env } from '../../env';
@@ -13,7 +13,7 @@ async function executeGetBusinessContext(
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			nao_project_folder: context.projectFolder,
+			dazense_project_folder: context.projectFolder,
 			...(category && { category }),
 			...(concepts?.length && { concepts }),
 		}),

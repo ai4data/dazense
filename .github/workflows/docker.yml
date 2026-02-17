@@ -8,7 +8,7 @@ on:
 
 env:
     REGISTRY: docker.io
-    IMAGE_NAME: getnao/nao
+    IMAGE_NAME: metazense/dazense
 
 jobs:
     build-and-push:
@@ -90,19 +90,19 @@ jobs:
                   username: github-actions-demo
                   key: ${{ secrets.PRIVATE_KEY }}
                   script: |
-                      docker pull getnao/nao:${{ needs.build-and-push.outputs.image-tag }}
-                      docker rm -f nao-chat 2>/dev/null || true
+                      docker pull metazense/dazense:${{ needs.build-and-push.outputs.image-tag }}
+                      docker rm -f dazense-chat 2>/dev/null || true
                       docker run -p 5005:5005 \
-                        -e "BETTER_AUTH_URL=https://moon.getnao.io" \
+                        -e "BETTER_AUTH_URL=https://dazense.metazense.com" \
                         -e "DB_SSL=true" \
                         -e "DB_URI=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}" \
-                        -e "NAO_CONTEXT_SOURCE=git" \
-                        -e "NAO_CONTEXT_GIT_URL=${{ secrets.NAO_CONTEXT_GIT_URL }}" \
-                        -e "NAO_CONTEXT_GIT_TOKEN=${{ secrets.NAO_CONTEXT_GIT_TOKEN }}" \
-                        -e "NAO_DEFAULT_PROJECT_PATH=/app/chat-analytics" \
+                        -e "DAZENSE_CONTEXT_SOURCE=git" \
+                        -e "DAZENSE_CONTEXT_GIT_URL=${{ secrets.DAZENSE_CONTEXT_GIT_URL }}" \
+                        -e "DAZENSE_CONTEXT_GIT_TOKEN=${{ secrets.DAZENSE_CONTEXT_GIT_TOKEN }}" \
+                        -e "DAZENSE_DEFAULT_PROJECT_PATH=/app/chat-analytics" \
                         -e GOOGLE_APPLICATION_CREDENTIALS_JSON='${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' \
                         -e "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" \
                         -e "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" \
                         -e "BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}" \
-                        --name nao-chat \
-                        -d getnao/nao:${{ needs.build-and-push.outputs.image-tag }}
+                        --name dazense-chat \
+                        -d metazense/dazense:${{ needs.build-and-push.outputs.image-tag }}

@@ -3,7 +3,7 @@ import { Streamdown } from 'streamdown';
 import { Code, Copy, Table } from 'lucide-react';
 import { useToolCallContext } from '../../contexts/tool-call.provider';
 import { ToolCallWrapper } from './tool-call-wrapper';
-import type { executeSql } from '@nao/shared/tools';
+import type { executeSql } from '@dazense/shared/tools';
 import { isToolSettled } from '@/lib/ai';
 
 type ViewMode = 'results' | 'query';

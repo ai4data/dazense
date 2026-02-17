@@ -1,6 +1,6 @@
-# 🪄 Contributing to nao
+# 🪄 Contributing to dazense
 
-Thank you for your interest in contributing to nao! 🎉
+Thank you for your interest in contributing to dazense! 🎉
 
 ## Getting Started
 
@@ -33,7 +33,7 @@ chat/
 ├── apps/
 │   ├── backend/     # Bun + Fastify + tRPC API server
 │   └── frontend/    # React + Vite + TanStack Router
-├── cli/             # Python CLI (nao-core package)
+├── cli/             # Python CLI (dazense-core package)
 └── ...
 ```
 
@@ -47,8 +47,8 @@ chat/
 | `npm run lint`                  | Run ESLint on both apps              |
 | `npm run lint:fix`              | Fix lint issues                      |
 | `npm run format`                | Format with Prettier                 |
-| `npm run -w @nao/backend test`  | Run backend tests                    |
-| `npm run -w @nao/frontend test` | Run frontend tests                   |
+| `npm run -w @dazense/backend test`  | Run backend tests                    |
+| `npm run -w @dazense/frontend test` | Run frontend tests                   |
 
 ### Database Commands
 
@@ -56,9 +56,9 @@ chat/
 | ------------------------------------- | ----------------------------------- |
 | `npm run pg:start`                    | Start PostgreSQL via docker-compose |
 | `npm run pg:stop`                     | Stop PostgreSQL                     |
-| `npm run -w @nao/backend db:generate` | Generate migrations                 |
-| `npm run -w @nao/backend db:migrate`  | Apply migrations                    |
-| `npm run -w @nao/backend db:studio`   | Open Drizzle Studio GUI             |
+| `npm run -w @dazense/backend db:generate` | Generate migrations                 |
+| `npm run -w @dazense/backend db:migrate`  | Apply migrations                    |
+| `npm run -w @dazense/backend db:studio`   | Open Drizzle Studio GUI             |
 
 ## Making Changes
 
@@ -78,7 +78,7 @@ chat/
 
 ## Questions?
 
-- 💬 [Join our Slack](https://join.slack.com/t/naolabs/shared_invite/zt-3cgdql4up-Az9FxGkTb8Qr34z2Dxp9TQ)
-- 🐛 [Open an issue](https://github.com/getnao/chat/issues)
+- 💬 [Join our Slack](https://metazense.slack.com)
+- 🐛 [Open an issue](https://github.com/dazense/chat/issues)
 
 Thank you for contributing! 🙏

@@ -63,7 +63,7 @@ export interface SlackConfig {
  * This is the single source of truth for all Slack config values.
  */
 export async function getSlackConfig(): Promise<SlackConfig | null> {
-	const projectPath = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectPath = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	if (!projectPath) {
 		return null;
 	}

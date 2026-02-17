@@ -75,14 +75,14 @@ jobs:
                   sed -i.bak "s/^version = \".*\"/version = \"$VERSION\"/" cli/pyproject.toml
 
                   # Update __init__.py
-                  sed -i.bak "s/^__version__ = \".*\"/__version__ = \"$VERSION\"/" cli/nao_core/__init__.py
+                  sed -i.bak "s/^__version__ = \".*\"/__version__ = \"$VERSION\"/" cli/dazense_core/__init__.py
 
                   echo "Updated version to $VERSION"
                   grep "^version" cli/pyproject.toml
-                  grep "__version__" cli/nao_core/__init__.py
+                  grep "__version__" cli/dazense_core/__init__.py
 
             - name: Mark as production build
-              run: echo 'BUILD_MODE = "prod"' > cli/nao_core/_build_info.py
+              run: echo 'BUILD_MODE = "prod"' > cli/dazense_core/_build_info.py
 
             - name: Build server and package
               working-directory: cli

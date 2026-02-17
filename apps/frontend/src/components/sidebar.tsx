@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { cn, hideIf } from '@/lib/utils';
 import { useChatListQuery } from '@/queries/use-chat-list-query';
 import { useSidebar } from '@/contexts/sidebar.provider';
-import NaoLogoGreyscale from '@/components/icons/nao-logo-greyscale.svg';
+import DazenseLogo from '@/components/icons/dazense-logo.png';
 
 export function Sidebar() {
 	const chats = useChatListQuery();
@@ -51,7 +51,7 @@ export function Sidebar() {
 							hideIf(isCollapsed),
 						)}
 					>
-						<NaoLogoGreyscale className='size-5' />
+						<img src={DazenseLogo} alt='Dazense' className='size-5' />
 					</div>
 
 					<Button

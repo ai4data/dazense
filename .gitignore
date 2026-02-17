@@ -11,7 +11,7 @@ count.txt
 *.sqlite
 .husky/_
 chats
-nao-chat-server
+dazense-chat-server*
 .pytest_cache/
 
 *.pyc

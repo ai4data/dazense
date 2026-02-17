@@ -1,10 +1,10 @@
-# nao Architecture
+# dazense Architecture
 
 ## Current Architecture
 
 ### Overview
 
-nao is a monorepo with three runtime components and a CLI:
+dazense is a monorepo with three runtime components and a CLI:
 
 ```
                     Browser
@@ -42,15 +42,15 @@ nao is a monorepo with three runtime components and a CLI:
 
 #### CLI (`cli/`)
 
-Python package (`nao-core`) published to PyPI. Entry point: `nao_core/main.py`.
+Python package (`dazense-core`) published to PyPI. Entry point: `dazense_core/main.py`.
 
 | Command     | What it does                                                                                                                       |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `nao init`  | Scaffolds a project — prompts for databases, LLM provider, creates `nao_config.yaml` and `RULES.md`                                |
-| `nao sync`  | Connects to databases, generates schema markdown files under `databases/`, syncs git repos, Notion pages, renders Jinja2 templates |
-| `nao chat`  | Launches the backend binary + FastAPI server, opens browser                                                                        |
-| `nao debug` | Tests database and LLM connectivity                                                                                                |
-| `nao test`  | Runs evaluation tests against YAML test cases                                                                                      |
+| `dazense init`  | Scaffolds a project — prompts for databases, LLM provider, creates `dazense_config.yaml` and `RULES.md`                                |
+| `dazense sync`  | Connects to databases, generates schema markdown files under `databases/`, syncs git repos, Notion pages, renders Jinja2 templates |
+| `dazense chat`  | Launches the backend binary + FastAPI server, opens browser                                                                        |
+| `dazense debug` | Tests database and LLM connectivity                                                                                                |
+| `dazense test`  | Runs evaluation tests against YAML test cases                                                                                      |
 
 **Key dependency:** Ibis Framework with adapters for DuckDB, PostgreSQL, BigQuery, Snowflake, Databricks, MSSQL.
 
@@ -58,7 +58,7 @@ Python package (`nao-core`) published to PyPI. Entry point: `nao_core/main.py`.
 
 ```
 project/
-├── nao_config.yaml
+├── dazense_config.yaml
 ├── RULES.md
 ├── databases/
 │   └── type={db_type}/
@@ -135,7 +135,7 @@ Python, runs on uvicorn at :8005. Handles operations that need Python runtime.
 
 ```
 1. Agent tool calls HTTP POST to localhost:8005/execute_sql
-2. FastAPI loads nao_config.yaml from project folder
+2. FastAPI loads dazense_config.yaml from project folder
 3. Resolves which database to use (single DB or by database_id)
 4. Connects via Ibis (DuckDB, Postgres, BigQuery, etc.)
 5. Executes SQL, returns results as JSON
@@ -224,14 +224,14 @@ Two new components are added to the existing architecture. Both live in the Fast
 
 ### What changes
 
-#### 1. New module: Semantic Layer (`cli/nao_core/semantic/`)
+#### 1. New module: Semantic Layer (`cli/dazense_core/semantic/`)
 
 A YAML-to-Ibis translator. Pure Python, no external dependencies beyond Ibis.
 
 **Files:**
 
 ```
-cli/nao_core/semantic/
+cli/dazense_core/semantic/
 ├── __init__.py
 ├── model.py          # Parse semantic_model.yml into Python objects
 ├── compiler.py       # Translate metric queries into Ibis expressions
@@ -306,14 +306,14 @@ class SemanticModel:
     models: dict[str, Model]
 ```
 
-#### 2. New module: Business Rules (`cli/nao_core/rules/`)
+#### 2. New module: Business Rules (`cli/dazense_core/rules/`)
 
 A YAML-based business rules engine. Pure Python, no rdflib.
 
 **Files:**
 
 ```
-cli/nao_core/rules/
+cli/dazense_core/rules/
 ├── __init__.py
 ├── loader.py         # Parse business_rules.yml
 └── engine.py         # Match rules to concepts, return relevant context
@@ -335,7 +335,7 @@ Added to `apps/backend/fastapi/main.py`:
 ```
 Request:
 {
-  "nao_project_folder": "/path/to/project",
+  "dazense_project_folder": "/path/to/project",
   "measures": ["order_count", "total_amount"],
   "dimensions": ["status"],
   "filters": { "status": "completed" },
@@ -360,7 +360,7 @@ Response:
 ```
 Request:
 {
-  "nao_project_folder": "/path/to/project",
+  "dazense_project_folder": "/path/to/project",
   "concepts": ["tips", "cash"],
   "context_type": "caveats"      # or "classifications" or "all"
 }
@@ -415,12 +415,12 @@ In `apps/backend/src/components/system-prompt.tsx`:
 
 #### 6. CLI changes
 
-In `cli/nao_core/commands/sync/`:
+In `cli/dazense_core/commands/sync/`:
 
-- During `nao sync`, validate `semantic_model.yml` against actual database schema if both exist
+- During `dazense sync`, validate `semantic_model.yml` against actual database schema if both exist
 - Report warnings for undefined tables, missing columns, invalid expressions
 
-In `cli/nao_core/commands/init/`:
+In `cli/dazense_core/commands/init/`:
 
 - Optionally scaffold a starter `semantic_model.yml` based on discovered tables
 - Auto-generate basic measures (count, sum of numeric columns) and dimensions (string/date columns)
@@ -473,13 +473,13 @@ User question arrives
 ### File inventory (new files only)
 
 ```
-cli/nao_core/semantic/__init__.py        # Module init
-cli/nao_core/semantic/model.py           # YAML parser (~100 lines)
-cli/nao_core/semantic/compiler.py        # Ibis query builder (~200 lines)
-cli/nao_core/semantic/validator.py       # Schema validation (~100 lines)
-cli/nao_core/rules/__init__.py           # Module init
-cli/nao_core/rules/loader.py             # YAML parser (~50 lines)
-cli/nao_core/rules/engine.py             # Rule matching (~100 lines)
+cli/dazense_core/semantic/__init__.py        # Module init
+cli/dazense_core/semantic/model.py           # YAML parser (~100 lines)
+cli/dazense_core/semantic/compiler.py        # Ibis query builder (~200 lines)
+cli/dazense_core/semantic/validator.py       # Schema validation (~100 lines)
+cli/dazense_core/rules/__init__.py           # Module init
+cli/dazense_core/rules/loader.py             # YAML parser (~50 lines)
+cli/dazense_core/rules/engine.py             # Rule matching (~100 lines)
 apps/backend/src/agents/tools/query-metrics.ts    # Agent tool (~40 lines)
 apps/backend/src/agents/tools/get-business-context.ts  # Agent tool (~40 lines)
 

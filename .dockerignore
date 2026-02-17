@@ -7,7 +7,7 @@ cli/__pycache__
 # Build outputs (we build in Docker)
 apps/frontend/dist
 apps/backend/dist
-apps/backend/nao-chat-server
+apps/backend/dazense-chat-server
 cli/dist
 
 # Development files

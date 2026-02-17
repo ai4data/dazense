@@ -1,37 +1,50 @@
-# nao CLI
+# dazense CLI
 
-Command-line interface for nao chat.
+Command-line interface for dazense chat.
 
 ## Installation
 
 ```bash
-pip install nao-core
+pip install dazense-core
+```
+
+## Build Prerequisites (for `python build.py`)
+
+- Node.js (includes `npm`) on PATH
+- Bun on PATH
+
+Verify:
+
+```bash
+node -v
+npm -v
+bun -v
 ```
 
 ## Usage
 
 ```bash
-nao --help
-Usage: nao COMMAND
+dazense --help
+Usage: dazense COMMAND
 
 ╭─ Commands ────────────────────────────────────────────────────────────────╮
-│ chat         Start the nao chat UI.                                       │
+│ chat         Start the dazense chat UI.                                   │
 │ debug        Test connectivity to configured resources.                   │
-│ init         Initialize a new nao project.                                │
+│ init         Initialize a new dazense project.                            │
 │ sync         Sync resources to local files.                               │
-│ test         Run and explore nao tests.                                   │
+│ test         Run and explore dazense tests.                               │
 │ --help (-h)  Display this message and exit.                               │
 │ --version    Display application version.                                 │
 ╰───────────────────────────────────────────────────────────────────────────╯
 ```
 
-### Initialize a new nao project
+### Initialize a new dazense project
 
 ```bash
-nao init
+dazense init
 ```
 
-This will create a new nao project in the current directory. It will prompt you for a project name and ask you to configure:
+This will create a new dazense project in the current directory. It will prompt you for a project name and ask you to configure:
 
 - **Database connections** (BigQuery, DuckDB, Databricks, Snowflake, PostgreSQL)
 - **Git repositories** to sync
@@ -43,8 +56,8 @@ The resulting project structure looks like:
 
 ```
 <project>/
-├── nao_config.yaml
-├── .naoignore
+├── dazense_config.yaml
+├── .dazenseignore
 ├── RULES.md
 ├── databases/
 ├── queries/
@@ -61,18 +74,18 @@ Options:
 
 - `--force` / `-f`: Force re-initialization even if the project already exists
 
-### Start the nao chat UI
+### Start the dazense chat UI
 
 ```bash
-nao chat
+dazense chat
 ```
 
-This will start the nao chat UI. It will open the chat interface in your browser at `http://localhost:5005`.
+This will start the dazense chat UI. It will open the chat interface in your browser at `http://localhost:5005`.
 
 ### Test connectivity
 
 ```bash
-nao debug
+dazense debug
 ```
 
 Tests connectivity to all configured databases and LLM providers. Displays a summary table showing connection status and details for each resource.
@@ -80,7 +93,7 @@ Tests connectivity to all configured databases and LLM providers. Displays a sum
 ### Sync resources
 
 ```bash
-nao sync
+dazense sync
 ```
 
 Syncs configured resources to local files:
@@ -89,12 +102,12 @@ Syncs configured resources to local files:
 - **Git repositories** — clones or pulls repos into `repos/`
 - **Notion pages** — exports pages as markdown into `docs/notion/`
 
-After syncing, any Jinja templates (`*.j2` files) in the project directory are rendered with the nao context.
+After syncing, any Jinja templates (`*.j2` files) in the project directory are rendered with the dazense context.
 
 ### Run tests
 
 ```bash
-nao test
+dazense test
 ```
 
 Runs test cases defined as YAML files in `tests/`. Each test has a `name`, `prompt`, and expected `sql`. Results are saved to `tests/outputs/`.
@@ -107,15 +120,15 @@ Options:
 Examples:
 
 ```bash
-nao test -m openai:gpt-4.1
-nao test -m openai:gpt-4.1 -m anthropic:claude-sonnet-4-20250514
-nao test --threads 4
+dazense test -m openai:gpt-4.1
+dazense test -m openai:gpt-4.1 -m anthropic:claude-sonnet-4-20250514
+dazense test --threads 4
 ```
 
 ### Explore test results
 
 ```bash
-nao test server
+dazense test server
 ```
 
 Starts a local web server to explore test results in a browser UI showing pass/fail status, token usage, cost, and detailed data comparisons.
@@ -127,16 +140,16 @@ Options:
 
 ### BigQuery service account permissions
 
-When you connect BigQuery during `nao init`, the service account used by `credentials_path`/ADC must be able to list datasets and run read-only queries to generate docs. Grant the account:
+When you connect BigQuery during `dazense init`, the service account used by `credentials_path`/ADC must be able to list datasets and run read-only queries to generate docs. Grant the account:
 
 - Project: `roles/bigquery.jobUser` (or `roles/bigquery.user`) so the CLI can submit queries
 - Each dataset you sync: `roles/bigquery.dataViewer` (or higher) to read tables
 
-The combination above mirrors the typical "BigQuery User" setup and is sufficient for nao's metadata and preview pulls.
+The combination above mirrors the typical "BigQuery User" setup and is sufficient for dazense's metadata and preview pulls.
 
 ### Snowflake authentication
 
-Snowflake supports three authentication methods during `nao init`:
+Snowflake supports three authentication methods during `dazense init`:
 
 - **SSO**: Browser-based authentication (recommended for organizations with SSO policies)
 - **Password**: Traditional username/password
@@ -151,7 +164,7 @@ cd cli
 python build.py --help
 Usage: build.py [OPTIONS]
 
-Build and package nao-core CLI.
+Build and package dazense-core CLI.
 
 ╭─ Parameters ──────────────────────────────────────────────────────────────────╮
 │ --force -f --no-force              Force rebuild the server binary             │
@@ -185,9 +198,9 @@ uv publish dist/*
 ## Architecture
 
 ```
-nao chat (CLI command)
+dazense chat (CLI command)
     ↓ spawns
-nao-chat-server (Bun-compiled binary, port 5005)
+dazense-chat-server (Bun-compiled binary, port 5005)
   + FastAPI server (port 8005)
     ↓ serves
 Backend API + Frontend Static Files

@@ -1,5 +1,5 @@
 # Compiled server binary and frontend assets
-nao_core/bin/
+dazense_core/bin/
 
 # Python cache
 __pycache__/

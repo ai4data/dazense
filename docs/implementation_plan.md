@@ -1,8 +1,8 @@
-# Plan: Add Semantic Layer + Business Rules to nao
+# Plan: Add Semantic Layer + Business Rules to dazense
 
 ## Context
 
-nao's agent currently writes **raw SQL from scratch every time** — it reads schema markdown, infers joins, and generates queries. This causes inconsistent answers, wrong joins, and no metric governance. We're adding two features from the datazense project:
+dazense's agent currently writes **raw SQL from scratch every time** — it reads schema markdown, infers joins, and generates queries. This causes inconsistent answers, wrong joins, and no metric governance. We're adding two features from the datazense project:
 
 1. **Semantic Layer** — YAML-defined metrics/dimensions, translated to SQL via Ibis (already a dependency)
 2. **Business Rules Engine** — YAML-defined caveats, rules, and classifications
@@ -15,12 +15,12 @@ Both are **optional** — projects without these files work exactly as today.
 
 ### Step 1: Python Semantic Models
 
-Create `cli/nao_core/semantic/` module with Pydantic models to parse `semantic_model.yml`.
+Create `cli/dazense_core/semantic/` module with Pydantic models to parse `semantic_model.yml`.
 
 **New files:**
 
-- `cli/nao_core/semantic/__init__.py`
-- `cli/nao_core/semantic/models.py` — `SemanticModel`, `ModelDefinition`, `Measure`, `Dimension`, `JoinDefinition` (Pydantic models)
+- `cli/dazense_core/semantic/__init__.py`
+- `cli/dazense_core/semantic/models.py` — `SemanticModel`, `ModelDefinition`, `Measure`, `Dimension`, `JoinDefinition` (Pydantic models)
 
 **YAML format** (placed in `semantics/semantic_model.yml` in project folder):
 
@@ -60,7 +60,7 @@ Create the core YAML-to-Ibis translator.
 
 **New file:**
 
-- `cli/nao_core/semantic/engine.py` — `SemanticEngine` class (~200 lines)
+- `cli/dazense_core/semantic/engine.py` — `SemanticEngine` class (~200 lines)
 
 **Interface:**
 
@@ -95,14 +95,14 @@ class SemanticEngine:
 8. Apply limit via `.limit()`
 9. Execute via `.execute()` -> returns pandas DataFrame -> convert to list[dict]
 
-**Reuses:** `NaoConfig.databases` for connections, `db_config.connect()` for Ibis backends — same pattern as `DatabaseContext` in `cli/nao_core/commands/sync/providers/databases/context.py`.
+**Reuses:** `DazenseConfig.databases` for connections, `db_config.connect()` for Ibis backends — same pattern as `DatabaseContext` in `cli/dazense_core/commands/sync/providers/databases/context.py`.
 
 ### Step 3: Python Business Rules
 
 **New files:**
 
-- `cli/nao_core/rules/__init__.py`
-- `cli/nao_core/rules/models.py` — `BusinessRules`, `BusinessRule` (Pydantic models)
+- `cli/dazense_core/rules/__init__.py`
+- `cli/dazense_core/rules/models.py` — `BusinessRules`, `BusinessRule` (Pydantic models)
 
 **YAML format** (placed in `semantics/business_rules.yml`):
 
@@ -141,13 +141,13 @@ Add 2 new endpoints following the existing `/execute_sql` pattern:
 
 **`POST /query_metrics`** — Loads semantic model, executes via SemanticEngine
 
-- Request: `{ nao_project_folder, model_name, measures[], dimensions[]?, filters[]?, order_by[]?, limit?, database_id? }`
+- Request: `{ dazense_project_folder, model_name, measures[], dimensions[]?, filters[]?, order_by[]?, limit?, database_id? }`
 - Response: `{ data[], row_count, columns[], model_name, measures[], dimensions[] }`
 - Returns 400 if no `semantic_model.yml` exists
 
 **`POST /business_context`** — Loads business rules, filters by category/concepts
 
-- Request: `{ nao_project_folder, category?, concepts[]? }`
+- Request: `{ dazense_project_folder, category?, concepts[]? }`
 - Response: `{ rules[], categories[] }`
 - Returns 400 if no `business_rules.yml` exists
 
@@ -250,14 +250,14 @@ models:
 
 | File                                                                | Purpose                           |
 | ------------------------------------------------------------------- | --------------------------------- |
-| `cli/nao_core/semantic/__init__.py`                                 | Package init                      |
-| `cli/nao_core/semantic/models.py`                                   | Pydantic YAML models (~100 lines) |
-| `cli/nao_core/semantic/engine.py`                                   | Ibis query builder (~200 lines)   |
-| `cli/nao_core/rules/__init__.py`                                    | Package init                      |
-| `cli/nao_core/rules/models.py`                                      | Pydantic rules models (~60 lines) |
-| `cli/tests/nao_core/semantic/test_models.py`                        | YAML parsing tests                |
-| `cli/tests/nao_core/semantic/test_engine.py`                        | Integration tests with DuckDB     |
-| `cli/tests/nao_core/rules/test_models.py`                           | Rules parsing tests               |
+| `cli/dazense_core/semantic/__init__.py`                                 | Package init                      |
+| `cli/dazense_core/semantic/models.py`                                   | Pydantic YAML models (~100 lines) |
+| `cli/dazense_core/semantic/engine.py`                                   | Ibis query builder (~200 lines)   |
+| `cli/dazense_core/rules/__init__.py`                                    | Package init                      |
+| `cli/dazense_core/rules/models.py`                                      | Pydantic rules models (~60 lines) |
+| `cli/tests/dazense_core/semantic/test_models.py`                        | YAML parsing tests                |
+| `cli/tests/dazense_core/semantic/test_engine.py`                        | Integration tests with DuckDB     |
+| `cli/tests/dazense_core/rules/test_models.py`                           | Rules parsing tests               |
 | `apps/shared/src/tools/query-metrics.ts`                            | Zod schemas                       |
 | `apps/shared/src/tools/get-business-context.ts`                     | Zod schemas                       |
 | `apps/backend/src/agents/tools/query-metrics.ts`                    | Agent tool (~45 lines)            |
@@ -292,7 +292,7 @@ models:
 
 ## Verification
 
-1. **Python tests:** `cd cli && python -m pytest tests/nao_core/semantic/ tests/nao_core/rules/ -v`
+1. **Python tests:** `cd cli && python -m pytest tests/dazense_core/semantic/ tests/dazense_core/rules/ -v`
 2. **Lint Python:** `cd cli && make lint`
 3. **Lint TypeScript:** `cd apps && npm run lint`
 4. **Manual E2E test:** Run `npm run dev`, open chat, ask "What is the total order amount?" — agent should use `query_metrics` tool instead of writing raw SQL

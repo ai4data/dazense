@@ -17,12 +17,12 @@ import search from './search';
 import suggestFollowUps from './suggest-follow-ups';
 
 function hasSemanticModel(): boolean {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	return !!projectFolder && existsSync(join(projectFolder, 'semantics', 'semantic_model.yml'));
 }
 
 function hasBusinessRules(): boolean {
-	const projectFolder = env.NAO_DEFAULT_PROJECT_PATH;
+	const projectFolder = env.DAZENSE_DEFAULT_PROJECT_PATH;
 	return !!projectFolder && existsSync(join(projectFolder, 'semantics', 'business_rules.yml'));
 }
 

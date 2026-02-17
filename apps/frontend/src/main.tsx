@@ -11,7 +11,7 @@ import { ThemeProvider } from './contexts/theme.provider';
 import { SidebarProvider } from './contexts/sidebar.provider';
 import { routeTree } from './routeTree.gen';
 import reportWebVitals from './reportWebVitals';
-import type { TrpcRouter } from '@nao/backend/trpc';
+import type { TrpcRouter } from '@dazense/backend/trpc';
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

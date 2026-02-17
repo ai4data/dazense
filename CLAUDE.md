@@ -1,8 +1,8 @@
 ## Project
 
-nao is an open-source framework for building and deploying **analytics agents**. Users define a project context (databases, metadata, docs, tools) via the `nao-core` CLI, then deploy a chat UI where business users ask questions in natural language and get data insights back.
+dazense is an open-source framework for building and deploying **analytics agents**. Users define a project context (databases, metadata, docs, tools) via the `dazense-core` CLI, then deploy a chat UI where business users ask questions in natural language and get data insights back.
 
-The CLI (`nao init`, `nao sync`, `nao chat`) scaffolds a project, syncs data sources, and launches the app. End users install the pip package or run the Docker image.
+The CLI (`dazense init`, `dazense sync`, `dazense chat`) scaffolds a project, syncs data sources, and launches the app. End users install the pip package or run the Docker image.
 
 ## Codebase
 
@@ -11,7 +11,7 @@ Monorepo with three workspaces:
 - **`apps/backend`** — API server (Fastify, tRPC, Drizzle ORM, Vercel AI SDK)
 - **`apps/frontend`** — Chat UI (React, TanStack Router/Query/Form, Shadcn, Tailwind)
 - **`apps/shared`** — Shared utilities (minimal)
-- **`cli/`** — Python CLI (`nao-core` package)
+- **`cli/`** — Python CLI (`dazense-core` package)
 
 Code is organised in layers (e.g. routes, services, queries, utils, types, etc).
 

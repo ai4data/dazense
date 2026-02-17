@@ -1,22 +1,22 @@
-# nao+ : Commercialization Plan
+# dazense+ : Commercialization Plan
 
 ## Vision
 
-Transform nao from an open-source SQL generation tool into a **production-ready analytics reasoning platform** by integrating a semantic layer and business rules engine, then commercializing via an open-core model with a hosted cloud offering.
+Transform dazense from an open-source SQL generation tool into a **production-ready analytics reasoning platform** by integrating a semantic layer and business rules engine, then commercializing via an open-core model with a hosted cloud offering.
 
 ---
 
 ## Context
 
-### What nao is today
+### What dazense is today
 
-nao is an open-source framework for building analytics agents. Users define a project context (databases, metadata, docs, tools) via a Python CLI, then deploy a chat UI where business users ask questions in natural language and get data insights.
+dazense is an open-source framework for building analytics agents. Users define a project context (databases, metadata, docs, tools) via a Python CLI, then deploy a chat UI where business users ask questions in natural language and get data insights.
 
-**Current stack:** Python CLI (nao-core) + TypeScript backend (Fastify/tRPC/Bun) + React frontend (TanStack/Shadcn) + FastAPI tools server.
+**Current stack:** Python CLI (dazense-core) + TypeScript backend (Fastify/tRPC/Bun) + React frontend (TanStack/Shadcn) + FastAPI tools server.
 
 ### The gap
 
-nao's agent writes **raw SQL from scratch every time**. It reads schema markdown files, infers table relationships, and generates queries. This works for simple cases but has real failure modes:
+dazense's agent writes **raw SQL from scratch every time**. It reads schema markdown files, infers table relationships, and generates queries. This works for simple cases but has real failure modes:
 
 - **Inconsistent answers** — same question, different SQL, different numbers
 - **Wrong joins** — LLM guesses relationships from column names
@@ -26,7 +26,7 @@ nao's agent writes **raw SQL from scratch every time**. It reads schema markdown
 
 ### The opportunity
 
-Integrate a **semantic layer** (consistent metric definitions) and **business rules engine** (domain knowledge and caveats) into nao. This IP comes from the datazense project, which demonstrated a 3-layer metadata architecture (Technical/Semantic/Ontology) for AI-powered analytics.
+Integrate a **semantic layer** (consistent metric definitions) and **business rules engine** (domain knowledge and caveats) into dazense. This IP comes from the datazense project, which demonstrated a 3-layer metadata architecture (Technical/Semantic/Ontology) for AI-powered analytics.
 
 ---
 
@@ -39,12 +39,12 @@ Integrate a **semantic layer** (consistent metric definitions) and **business ru
 **What to build:**
 
 1. **YAML-to-Ibis translator** (~300-500 lines of Python)
-    - Location: `cli/nao_core/semantic/` (new module)
+    - Location: `cli/dazense_core/semantic/` (new module)
     - Parses a `semantic_model.yml` file from the project folder
     - Resolves table references, joins, and aggregations
     - Translates metric queries into Ibis expressions
     - Ibis compiles to the target SQL dialect (DuckDB, Postgres, BigQuery, Snowflake, etc.)
-    - No external dependency — Ibis is already in nao's stack
+    - No external dependency — Ibis is already in dazense's stack
 
 2. **New FastAPI endpoint** (`/query_metrics`)
     - Location: `apps/backend/fastapi/main.py` (extend existing)
@@ -64,8 +64,8 @@ Integrate a **semantic layer** (consistent metric definitions) and **business ru
     - Instruct agent: prefer `query_metrics` for defined metrics, fall back to `execute_sql` for ad-hoc queries
 
 5. **CLI awareness**
-    - `nao sync` validates the semantic model if present
-    - `nao init` optionally scaffolds a starter `semantic_model.yml`
+    - `dazense sync` validates the semantic model if present
+    - `dazense init` optionally scaffolds a starter `semantic_model.yml`
 
 **Semantic model format** (per project):
 
@@ -163,7 +163,7 @@ classifications:
 
 ### Phase 3: Hosted Cloud
 
-**Goal:** Deploy nao as a hosted service. Users sign up, connect a database, define metrics, and chat.
+**Goal:** Deploy dazense as a hosted service. Users sign up, connect a database, define metrics, and chat.
 
 **What to build:**
 
@@ -204,7 +204,7 @@ classifications:
 
 ### Competitive edge
 
-The semantic layer + business rules engine is the moat. Open-source nao writes raw SQL (anyone can do that). Paid nao delivers **governed, consistent, context-aware analytics** — that's what enterprises pay for.
+The semantic layer + business rules engine is the moat. Open-source dazense writes raw SQL (anyone can do that). Paid dazense delivers **governed, consistent, context-aware analytics** — that's what enterprises pay for.
 
 ---
 
@@ -212,7 +212,7 @@ The semantic layer + business rules engine is the moat. Open-source nao writes r
 
 | Risk                                          | Mitigation                                                          |
 | --------------------------------------------- | ------------------------------------------------------------------- |
-| Semantic model is hard for users to write     | Auto-generate starter model from database schema during `nao sync`  |
+| Semantic model is hard for users to write     | Auto-generate starter model from database schema during `dazense sync`  |
 | Agent picks wrong tool (semantic vs raw SQL)  | Careful prompt engineering + fallback logic                         |
 | Ibis doesn't support a target database        | Ibis supports 20+ backends — unlikely, but can add raw SQL fallback |
 | boring-semantic-layer was simpler than custom | Custom code is ~300-500 lines, well within maintenance budget       |
