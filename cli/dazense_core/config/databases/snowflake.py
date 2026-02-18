@@ -2,7 +2,7 @@ import os
 from typing import Literal
 
 import ibis
-from cryptography.hazmat.backends import default_backend  # ty: ignore[unresolved-import]
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from ibis import BaseBackend
 from pydantic import Field

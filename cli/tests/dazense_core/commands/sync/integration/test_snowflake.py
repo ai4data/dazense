@@ -14,7 +14,7 @@ from pathlib import Path
 
 import ibis
 import pytest
-from cryptography.hazmat.backends import default_backend  # ty: ignore[unresolved-import]
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
 from dazense_core.config.databases.snowflake import SnowflakeConfig

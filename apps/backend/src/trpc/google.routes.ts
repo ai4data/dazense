@@ -22,7 +22,7 @@ export const googleRoutes = {
 				authDomains: z.string(),
 			}),
 		)
-		.mutation(({ input }) => {
+		.mutation(({ input: _input }) => {
 			//TO DO : Save google settings in a secure store or database
 
 			// process.env.GOOGLE_CLIENT_ID = input.clientId;

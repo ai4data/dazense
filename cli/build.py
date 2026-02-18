@@ -153,10 +153,8 @@ def build_server(project_root: Path, output_dir: Path) -> None:
     frontend_dir = project_root / "apps" / "frontend"
     if sys.platform == "win32":
         npm_cmd = require_cmd("npm", ["npm.cmd", "npm.exe", "npm"])
-        bun_cmd = require_cmd("bun", ["bun.exe", "bun"])
     else:
         npm_cmd = require_cmd("npm", ["npm"])
-        bun_cmd = require_cmd("bun", ["bun"])
 
     print("📦 Building dazense chat server...")
     print(f"   Project root: {project_root}")
