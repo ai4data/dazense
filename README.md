@@ -1,9 +1,6 @@
 <p align="center">
   <a href="https://dazense.metazense.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset=".github/images/Icon_template_IOS.svg" />
-      <img src=".github/images/Icon_template_IOS.svg" height="128" alt="dazense logo" />
-    </picture>
+    <img src="apps/frontend/public/logo192.png" height="128" alt="dazense logo" />
   </a>
 </p>
 
