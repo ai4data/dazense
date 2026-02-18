@@ -1,7 +1,7 @@
 """Unit tests for the template engine."""
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from unittest.mock import MagicMock
 
 from dazense_core.templates.engine import (
@@ -192,7 +192,7 @@ class TestTemplateFilters:
 
         engine = TemplateEngine(project_path=tmp_path)
         # Path objects are not JSON serializable by default
-        result = engine.render("test.j2", data={"path": Path("/some/path")})
+        result = engine.render("test.j2", data={"path": PurePosixPath("/some/path")})
 
         assert "/some/path" in result
 

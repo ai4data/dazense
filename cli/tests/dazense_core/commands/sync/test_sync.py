@@ -40,8 +40,8 @@ class TestSyncCommand:
     def test_sync_exits_when_no_config_found(self, tmp_path: Path, monkeypatch):
         monkeypatch.chdir(tmp_path)
 
-        with patch("dazense_core.config.base.Console") as mock_console_cls:
-            mock_console = mock_console_cls.return_value
+        mock_console = MagicMock()
+        with patch("dazense_core.ui.create_console", return_value=mock_console):
             with pytest.raises(SystemExit) as exc_info:
                 sync()
 

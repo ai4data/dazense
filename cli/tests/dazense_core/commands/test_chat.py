@@ -55,8 +55,8 @@ def test_try_load_returns_config_when_valid(tmp_path: Path):
 
 
 def test_try_load_exits_on_file_not_found(tmp_path: Path):
-    with patch("dazense_core.config.base.Console") as mock_console_cls:
-        mock_console = mock_console_cls.return_value
+    mock_console = MagicMock()
+    with patch("dazense_core.ui.create_console", return_value=mock_console):
         with pytest.raises(SystemExit) as exc_info:
             DazenseConfig.try_load(tmp_path, exit_on_error=True)
 
@@ -68,8 +68,8 @@ def test_try_load_exits_on_invalid_yaml(tmp_path: Path):
     invalid_yaml = tmp_path / "dazense_config.yaml"
     invalid_yaml.write_text("project_name: [invalid yaml")
 
-    with patch("dazense_core.config.base.Console") as mock_console_cls:
-        mock_console = mock_console_cls.return_value
+    mock_console = MagicMock()
+    with patch("dazense_core.ui.create_console", return_value=mock_console):
         with pytest.raises(SystemExit) as exc_info:
             DazenseConfig.try_load(tmp_path, exit_on_error=True)
 
@@ -84,8 +84,8 @@ def test_try_load_exits_on_validation_error(tmp_path: Path):
     invalid_config = tmp_path / "dazense_config.yaml"
     invalid_config.write_text("databases: []")  # Missing required project_name
 
-    with patch("dazense_core.config.base.Console") as mock_console_cls:
-        mock_console = mock_console_cls.return_value
+    mock_console = MagicMock()
+    with patch("dazense_core.ui.create_console", return_value=mock_console):
         with pytest.raises(SystemExit) as exc_info:
             DazenseConfig.try_load(tmp_path, exit_on_error=True)
 
@@ -131,7 +131,7 @@ def test_try_load_raises_on_validation_error(tmp_path: Path):
 def test_chat_exits_when_no_config_found(tmp_path: Path, monkeypatch, clean_env):
     monkeypatch.chdir(tmp_path)
 
-    with patch("dazense_core.config.base.Console"):
+    with patch("dazense_core.ui.create_console", return_value=MagicMock()):
         with pytest.raises(SystemExit) as exc_info:
             chat()
 
