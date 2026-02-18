@@ -20,7 +20,7 @@ COPY apps/frontend/package.json ./apps/frontend/
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/shared/package.json ./apps/shared/
 
-RUN npm ci
+RUN rm -f package-lock.json && npm install
 
 COPY apps/frontend ./apps/frontend
 COPY apps/backend ./apps/backend
