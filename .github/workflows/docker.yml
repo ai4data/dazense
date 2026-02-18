@@ -80,7 +80,7 @@ jobs:
         name: Deploy to GCP instance
         runs-on: ubuntu-latest
         needs: build-and-push
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || endsWith(github.ref, 'docker'))
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || endsWith(github.ref, 'docker')) && secrets.VM_HOST != ''
 
         steps:
             - name: Deploy with remote ssh commands using ssh key
