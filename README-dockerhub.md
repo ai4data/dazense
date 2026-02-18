@@ -34,15 +34,15 @@ docker run -d \
 
 ## Environment Variables
 
-| Variable                   | Required | Description                                           |
-| -------------------------- | -------- | ----------------------------------------------------- |
+| Variable                       | Required | Description                                            |
+| ------------------------------ | -------- | ------------------------------------------------------ |
 | `DAZENSE_DEFAULT_PROJECT_PATH` | Yes      | Path to your dazense project (default: `/app/example`) |
-| `OPENAI_API_KEY`           | No\*     | OpenAI API key                                        |
-| `ANTHROPIC_API_KEY`        | No\*     | Anthropic API key                                     |
-| `BETTER_AUTH_SECRET`       | No       | Secret key for authentication                         |
-| `DB_URI`                   | No       | PostgreSQL connection string (uses SQLite if not set) |
-| `SLACK_BOT_TOKEN`          | No       | Slack bot token for Slack integration                 |
-| `SLACK_SIGNING_SECRET`     | No       | Slack signing secret                                  |
+| `OPENAI_API_KEY`               | No\*     | OpenAI API key                                         |
+| `ANTHROPIC_API_KEY`            | No\*     | Anthropic API key                                      |
+| `BETTER_AUTH_SECRET`           | No       | Secret key for authentication                          |
+| `DB_URI`                       | No       | PostgreSQL connection string (uses SQLite if not set)  |
+| `SLACK_BOT_TOKEN`              | No       | Slack bot token for Slack integration                  |
+| `SLACK_SIGNING_SECRET`         | No       | Slack signing secret                                   |
 
 \* At least one LLM API key is required to make AI queries.
 

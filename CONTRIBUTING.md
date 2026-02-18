@@ -39,23 +39,23 @@ chat/
 
 ## Development Commands
 
-| Command                         | Description                          |
-| ------------------------------- | ------------------------------------ |
-| `npm run dev`                   | Start backend + frontend in dev mode |
-| `npm run dev:backend`           | Backend only (Bun on :5005)          |
-| `npm run dev:frontend`          | Frontend only (Vite on :3000)        |
-| `npm run lint`                  | Run ESLint on both apps              |
-| `npm run lint:fix`              | Fix lint issues                      |
-| `npm run format`                | Format with Prettier                 |
+| Command                             | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| `npm run dev`                       | Start backend + frontend in dev mode |
+| `npm run dev:backend`               | Backend only (Bun on :5005)          |
+| `npm run dev:frontend`              | Frontend only (Vite on :3000)        |
+| `npm run lint`                      | Run ESLint on both apps              |
+| `npm run lint:fix`                  | Fix lint issues                      |
+| `npm run format`                    | Format with Prettier                 |
 | `npm run -w @dazense/backend test`  | Run backend tests                    |
 | `npm run -w @dazense/frontend test` | Run frontend tests                   |
 
 ### Database Commands
 
-| Command                               | Description                         |
-| ------------------------------------- | ----------------------------------- |
-| `npm run pg:start`                    | Start PostgreSQL via docker-compose |
-| `npm run pg:stop`                     | Stop PostgreSQL                     |
+| Command                                   | Description                         |
+| ----------------------------------------- | ----------------------------------- |
+| `npm run pg:start`                        | Start PostgreSQL via docker-compose |
+| `npm run pg:stop`                         | Stop PostgreSQL                     |
 | `npm run -w @dazense/backend db:generate` | Generate migrations                 |
 | `npm run -w @dazense/backend db:migrate`  | Apply migrations                    |
 | `npm run -w @dazense/backend db:studio`   | Open Drizzle Studio GUI             |

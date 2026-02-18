@@ -210,10 +210,10 @@ The semantic layer + business rules engine is the moat. Open-source dazense writ
 
 ## Risks
 
-| Risk                                          | Mitigation                                                          |
-| --------------------------------------------- | ------------------------------------------------------------------- |
-| Semantic model is hard for users to write     | Auto-generate starter model from database schema during `dazense sync`  |
-| Agent picks wrong tool (semantic vs raw SQL)  | Careful prompt engineering + fallback logic                         |
-| Ibis doesn't support a target database        | Ibis supports 20+ backends — unlikely, but can add raw SQL fallback |
-| boring-semantic-layer was simpler than custom | Custom code is ~300-500 lines, well within maintenance budget       |
-| Cloud hosting costs                           | Start with single-region, scale based on revenue                    |
+| Risk                                          | Mitigation                                                             |
+| --------------------------------------------- | ---------------------------------------------------------------------- |
+| Semantic model is hard for users to write     | Auto-generate starter model from database schema during `dazense sync` |
+| Agent picks wrong tool (semantic vs raw SQL)  | Careful prompt engineering + fallback logic                            |
+| Ibis doesn't support a target database        | Ibis supports 20+ backends — unlikely, but can add raw SQL fallback    |
+| boring-semantic-layer was simpler than custom | Custom code is ~300-500 lines, well within maintenance budget          |
+| Cloud hosting costs                           | Start with single-region, scale based on revenue                       |

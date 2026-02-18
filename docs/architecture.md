@@ -44,9 +44,9 @@ dazense is a monorepo with three runtime components and a CLI:
 
 Python package (`dazense-core`) published to PyPI. Entry point: `dazense_core/main.py`.
 
-| Command     | What it does                                                                                                                       |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `dazense init`  | Scaffolds a project — prompts for databases, LLM provider, creates `dazense_config.yaml` and `RULES.md`                                |
+| Command         | What it does                                                                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `dazense init`  | Scaffolds a project — prompts for databases, LLM provider, creates `dazense_config.yaml` and `RULES.md`                            |
 | `dazense sync`  | Connects to databases, generates schema markdown files under `databases/`, syncs git repos, Notion pages, renders Jinja2 templates |
 | `dazense chat`  | Launches the backend binary + FastAPI server, opens browser                                                                        |
 | `dazense debug` | Tests database and LLM connectivity                                                                                                |

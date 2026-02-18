@@ -250,14 +250,14 @@ models:
 
 | File                                                                | Purpose                           |
 | ------------------------------------------------------------------- | --------------------------------- |
-| `cli/dazense_core/semantic/__init__.py`                                 | Package init                      |
-| `cli/dazense_core/semantic/models.py`                                   | Pydantic YAML models (~100 lines) |
-| `cli/dazense_core/semantic/engine.py`                                   | Ibis query builder (~200 lines)   |
-| `cli/dazense_core/rules/__init__.py`                                    | Package init                      |
-| `cli/dazense_core/rules/models.py`                                      | Pydantic rules models (~60 lines) |
-| `cli/tests/dazense_core/semantic/test_models.py`                        | YAML parsing tests                |
-| `cli/tests/dazense_core/semantic/test_engine.py`                        | Integration tests with DuckDB     |
-| `cli/tests/dazense_core/rules/test_models.py`                           | Rules parsing tests               |
+| `cli/dazense_core/semantic/__init__.py`                             | Package init                      |
+| `cli/dazense_core/semantic/models.py`                               | Pydantic YAML models (~100 lines) |
+| `cli/dazense_core/semantic/engine.py`                               | Ibis query builder (~200 lines)   |
+| `cli/dazense_core/rules/__init__.py`                                | Package init                      |
+| `cli/dazense_core/rules/models.py`                                  | Pydantic rules models (~60 lines) |
+| `cli/tests/dazense_core/semantic/test_models.py`                    | YAML parsing tests                |
+| `cli/tests/dazense_core/semantic/test_engine.py`                    | Integration tests with DuckDB     |
+| `cli/tests/dazense_core/rules/test_models.py`                       | Rules parsing tests               |
 | `apps/shared/src/tools/query-metrics.ts`                            | Zod schemas                       |
 | `apps/shared/src/tools/get-business-context.ts`                     | Zod schemas                       |
 | `apps/backend/src/agents/tools/query-metrics.ts`                    | Agent tool (~45 lines)            |

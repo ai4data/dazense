@@ -154,7 +154,8 @@ code {
 	}
 	body {
 		@apply bg-background text-foreground;
-		background-image: radial-gradient(circle at 20% 50%, rgba(129, 66, 255, 0.15), transparent 50%),
+		background-image:
+			radial-gradient(circle at 20% 50%, rgba(129, 66, 255, 0.15), transparent 50%),
 			radial-gradient(circle at 80% 30%, rgba(170, 128, 255, 0.1), transparent 40%);
 		background-attachment: fixed;
 	}
