@@ -1,6 +1,6 @@
 [project]
 name = "dazense-core"
-version = "0.0.36"
+version = "0.0.37"
 description = "dazense Core is your analytics context builder with the best chat interface."
 readme = "README.md"
 requires-python = ">=3.10"
